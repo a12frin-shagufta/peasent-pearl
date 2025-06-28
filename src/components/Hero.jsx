@@ -42,7 +42,7 @@ const Hero = () => {
   };
 
   return (
-    <section className=" w-full h-screen overflow-hidden bg-amber-50">
+    <section className="w-full h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] overflow-hidden bg-amber-50">
       {/* Animated background texture */}
       <motion.div 
         initial={{ opacity: 0 }}
