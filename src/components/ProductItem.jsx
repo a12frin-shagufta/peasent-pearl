@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import { Link } from 'react-router-dom'
 
-const ProductItem = ({ id, image, name, price }) => {
+const ProductItem = ({ id, image, name, price,stock }) => {
   const { currency } = useContext(ShopContext)
 
   return (
@@ -17,6 +17,12 @@ const ProductItem = ({ id, image, name, price }) => {
           alt={name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
         />
+         {/* Out of Stock Badge */}
+          {stock === 0 && (
+            <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
+              Out of Stock
+            </span>
+          )}
       </div>
       
       <div className="p-4">

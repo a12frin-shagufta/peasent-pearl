@@ -2,7 +2,7 @@ export const products = [
     {
         "_id": 1,
         "name": "Anklet",
-        "price": "200",
+        "price": "400",
         "image": ["/assets/image/ak1.jpg"],
         "category": "Anklet",
         "stock": 10,
@@ -14,10 +14,10 @@ export const products = [
     {
         "_id": 101,
         "name": "Anklet",
-        "price": "200",
+        "price": "300",
         "image": ["/assets/image/ak2.jpg"],
         "category": "Anklet",
-        "stock": 10,
+        "stock": 0,
          "bestseller": false
 
 
@@ -26,10 +26,10 @@ export const products = [
     {
         "_id": 102,
         "name": "Anklet",
-        "price": "200",
+        "price": "150",
         "image": ["/assets/image/ak3.jpg"],
         "category": "Anklet",
-        "stock": 10,
+        "stock": 0,
          "bestseller": false
 
 
@@ -62,7 +62,7 @@ export const products = [
     {
         "_id": 201,
         "name": "Bracelet",
-        "price": "200",
+        "price": "100",
         "image": ["/assets/image/b2.jpg"],
         "category": "Bracelet",
         "stock": 10,
@@ -74,10 +74,10 @@ export const products = [
     {
         "_id": 202,
         "name": "Bracelet",
-        "price": "200",
+        "price": "300",
         "image": ["/assets/image/b3.jpg"],
         "category": "Bracelet",
-        "stock": 10,
+        "stock": 0,
          "bestseller": false
 
 
@@ -86,7 +86,7 @@ export const products = [
     {
         "_id": 203,
         "name": "Bracelet",
-        "price": "200",
+        "price": "150",
         "image": ["/assets/image/b4.jpg"],
         "category": "Bracelet",
         "stock": 10,
@@ -110,7 +110,7 @@ export const products = [
      {
         "_id": 301,
         "name": "Necklace",
-        "price": "200",
+        "price": "300",
         "image": ["/assets/image/n2.jpg"],
         "category": "Necklace",
         "stock": 10,
@@ -122,7 +122,7 @@ export const products = [
      {
         "_id": 302,
         "name": "Necklace",
-        "price": "200",
+        "price": "400",
         "image": ["/assets/image/n3.jpg"],
         "category": "Necklace",
         "stock": 10,
@@ -208,7 +208,7 @@ export const products = [
     {
         "_id": 501,
         "name": "Bags",
-        "price": "200",
+        "price": "600",
         "image": ["/assets/image/bag2.jpg"],
         "category": "Bags",
         "stock": 10,
@@ -221,7 +221,7 @@ export const products = [
     {
         "_id": 502,
         "name": "Bags",
-        "price": "200",
+        "price": "700",
         "image": ["/assets/image/bag3.jpg"],
         "category": "Bags",
         "stock": 10,
@@ -234,7 +234,7 @@ export const products = [
     {
         "_id": 503,
         "name": "Bags",
-        "price": "200",
+        "price": "400",
         "image": ["/assets/image/bag4.jpg"],
         "category": "Bags",
         "stock": 10,
@@ -249,7 +249,7 @@ export const products = [
         "_id": 6,
         "name": "Ringlet",
         "price": "200",
-        "image": ["/assets/image/ri1.jpg"],
+        "image": ["/assets/image/ri.jpg"],
         "category": "Ringlet",
         "stock": 10,
          "bestseller": true
@@ -285,7 +285,7 @@ export const products = [
         "_id": 603,
         "name": "Ringlet",
         "price": "200",
-        "image": ["/assets/image/ri4.jpg"],
+        "image": ["/assets/image/ri1.jpg"],
         "category": "Ringlet",
         "stock": 10,
          "bestseller": true
