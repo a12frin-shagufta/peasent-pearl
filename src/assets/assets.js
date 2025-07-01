@@ -6,7 +6,8 @@ export const products = [
         "image": ["/assets/image/ak1.jpg"],
         "category": "Anklet",
         "stock": 10,
-         "bestseller": false
+         "bestseller": false,
+         "details": "required"
 
 
     
@@ -18,7 +19,8 @@ export const products = [
         "image": ["/assets/image/ak2.jpg"],
         "category": "Anklet",
         "stock": 0,
-         "bestseller": false
+         "bestseller": false,
+         "details": "required"
 
 
     
@@ -30,7 +32,8 @@ export const products = [
         "image": ["/assets/image/ak3.jpg"],
         "category": "Anklet",
         "stock": 0,
-         "bestseller": false
+         "bestseller": false,
+         "details": "required"
 
 
     
@@ -42,7 +45,8 @@ export const products = [
         "image": ["/assets/image/ak4.jpg"],
         "category": "Anklet",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -54,7 +58,8 @@ export const products = [
         "image": ["/assets/image/b1.jpg"],
         "category": "Bracelet",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+          "details": "6 inches with 2 inches extension chain"
 
 
     
@@ -66,7 +71,8 @@ export const products = [
         "image": ["/assets/image/b2.jpg"],
         "category": "Bracelet",
         "stock": 10,
-         "bestseller": false
+         "bestseller": false,
+          "details": "6 inches with 2 inches extension chain"
 
 
     
@@ -78,7 +84,8 @@ export const products = [
         "image": ["/assets/image/b3.jpg"],
         "category": "Bracelet",
         "stock": 0,
-         "bestseller": false
+         "bestseller": false,
+          "details": "6 inches with 2 inches extension chain"
 
 
     
@@ -90,7 +97,8 @@ export const products = [
         "image": ["/assets/image/b4.jpg"],
         "category": "Bracelet",
         "stock": 10,
-         "bestseller": false
+         "bestseller": false,
+          "details": "6 inches with 2 inches extension chain"
 
 
     
@@ -102,7 +110,8 @@ export const products = [
         "image": ["/assets/image/n1.jpg"],
         "category": "Necklace",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+          "details": "12 inches with 3 inches extension chain"
 
 
     
@@ -114,7 +123,8 @@ export const products = [
         "image": ["/assets/image/n2.jpg"],
         "category": "Necklace",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+          "details": "12 inches with 3 inches extension chain"
 
 
     
@@ -126,7 +136,8 @@ export const products = [
         "image": ["/assets/image/n3.jpg"],
         "category": "Necklace",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+          "details": "12 inches with 3 inches extension chain"
 
 
     
@@ -138,7 +149,8 @@ export const products = [
         "image": ["/assets/image/n4.jpg"],
         "category": "Necklace",
         "stock": 10,
-         "bestseller": false
+         "bestseller": false,
+          "details": "12 inches with 3 inches extension chain"
 
 
     
@@ -151,7 +163,8 @@ export const products = [
         "image": ["/assets/image/ring1.jpg"],
         "category": "Rings",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -163,7 +176,8 @@ export const products = [
         "image": ["/assets/image/ring2.jpg"],
         "category": "Rings",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -175,7 +189,8 @@ export const products = [
         "image": ["/assets/image/ring3.jpg"],
         "category": "Rings",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -187,7 +202,8 @@ export const products = [
         "image": ["/assets/image/ring4.jpg"],
         "category": "Rings",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -199,7 +215,8 @@ export const products = [
         "image": ["/assets/image/bag1.jpg"],
         "category": "Bags",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -212,7 +229,8 @@ export const products = [
         "image": ["/assets/image/bag2.jpg"],
         "category": "Bags",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -225,7 +243,8 @@ export const products = [
         "image": ["/assets/image/bag3.jpg"],
         "category": "Bags",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -238,7 +257,8 @@ export const products = [
         "image": ["/assets/image/bag4.jpg"],
         "category": "Bags",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -252,7 +272,8 @@ export const products = [
         "image": ["/assets/image/ri.jpg"],
         "category": "Ringlet",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -264,7 +285,8 @@ export const products = [
         "image": ["/assets/image/ri2.jpg"],
         "category": "Ringlet",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -276,7 +298,8 @@ export const products = [
         "image": ["/assets/image/ri3.jpg"],
         "category": "Ringlet",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     
@@ -288,7 +311,8 @@ export const products = [
         "image": ["/assets/image/ri1.jpg"],
         "category": "Ringlet",
         "stock": 10,
-         "bestseller": true
+         "bestseller": true,
+         "details": "required"
 
 
     

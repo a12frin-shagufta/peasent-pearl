@@ -42,19 +42,19 @@ const About = () => {
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-amber-50 to-amber-100">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 ">
       <div className="max-w-6xl mx-auto">
         <motion.div 
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
           variants={container}
-          className="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col lg:flex-row border-2 border-amber-700/20"
+          className="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col lg:flex-row border-2 border-amber-500"
         >
           {/* Left Side - Brand Logo */}
           <motion.div 
             variants={item}
-            className="lg:w-1/2 p-8 md:p-12 flex items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200 relative overflow-hidden"
+            className="lg:w-1/2 p-8 md:p-12 flex items-center justify-center bg-gradient-to-b from-amber-50 to-amber-100 relative overflow-hidden"
           >
             {/* Floating decorative elements */}
             <motion.div

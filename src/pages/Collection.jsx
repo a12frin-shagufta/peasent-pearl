@@ -1,22 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ShopContext } from '../context/ShopContext';
+import React, { useContext, useEffect, useState } from "react";
+import { ShopContext } from "../context/ShopContext";
 import { RiArrowDropDownLine, RiFilterLine } from "react-icons/ri";
-import { motion, AnimatePresence } from 'framer-motion';
-import ProductItem from '../components/ProductItem';
+import { motion, AnimatePresence } from "framer-motion";
+import ProductItem from "../components/ProductItem";
 
 const Collection = () => {
   const { products } = useContext(ShopContext);
+
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
-  const [sortOption, setSortOption] = useState('relevant');
+  const [sortOption, setSortOption] = useState("relevant");
   const [priceRange, setPriceRange] = useState([0, 1000]);
 
   const toggleCategory = (e) => {
     const value = e.target.value;
-    setCategory(prev =>
+    setCategory((prev) =>
       prev.includes(value)
-        ? prev.filter(item => item !== value)
+        ? prev.filter((item) => item !== value)
         : [...prev, value]
     );
   };
@@ -25,11 +26,11 @@ const Collection = () => {
     let filtered = [...products];
 
     if (category.length > 0) {
-      filtered = filtered.filter(item => category.includes(item.category));
+      filtered = filtered.filter((item) => category.includes(item.category));
     }
 
-    filtered = filtered.filter(item => 
-      item.price >= priceRange[0] && item.price <= priceRange[1]
+    filtered = filtered.filter(
+      (item) => item.price >= priceRange[0] && item.price <= priceRange[1]
     );
 
     if (sortOption === "low-high") {
@@ -55,8 +56,8 @@ const Collection = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
   };
 
   const staggerContainer = {
@@ -65,9 +66,9 @@ const Collection = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+        delayChildren: 0.2,
+      },
+    },
   };
 
   const categories = ["Necklace", "Rings", "Bags", "Ringlet", "Anklet"];
@@ -76,7 +77,7 @@ const Collection = () => {
     <div className="min-h-screen bg-[#faf6f2]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         {/* Page Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -92,7 +93,7 @@ const Collection = () => {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filter Sidebar */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -107,20 +108,23 @@ const Collection = () => {
               FILTERS
               <RiArrowDropDownLine
                 className={`text-xl transition-transform duration-300 ${
-                  showFilter ? 'rotate-180' : ''
+                  showFilter ? "rotate-180" : ""
                 }`}
               />
             </button>
 
             {/* Filter Panel */}
             <AnimatePresence>
-              {(showFilter || !window.matchMedia('(max-width: 1023px)').matches) && (
+              {(showFilter ||
+                !window.matchMedia("(max-width: 1023px)").matches) && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
+                  animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`bg-cream-50 rounded-xl shadow-sm border border-amber-100 overflow-hidden ${showFilter ? 'block' : 'hidden'} lg:block`}
+                  className={`bg-cream-50 rounded-xl shadow-sm border border-amber-100 overflow-hidden ${
+                    showFilter ? "block" : "hidden"
+                  } lg:block`}
                 >
                   <div className="p-6">
                     <h3 className="font-medium text-amber-900 mb-5 flex items-center gap-2 text-lg">
@@ -135,7 +139,7 @@ const Collection = () => {
                       </h4>
                       <div className="flex flex-col gap-3">
                         {categories.map((cat) => (
-                          <motion.label 
+                          <motion.label
                             key={cat}
                             whileHover={{ x: 5 }}
                             className="flex items-center gap-3 cursor-pointer text-amber-900/90"
@@ -164,13 +168,18 @@ const Collection = () => {
                           min="0"
                           max="1000"
                           value={priceRange[1]}
-                          onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                          onChange={(e) =>
+                            setPriceRange([
+                              priceRange[0],
+                              parseInt(e.target.value),
+                            ])
+                          }
                           className="w-full h-1.5 bg-amber-200 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-700"
                         />
                       </div>
                       <div className="flex justify-between text-sm text-amber-700 mt-3">
-                        <span>Rs {priceRange[0]}</span>
-                        <span>RS {priceRange[1]}</span>
+                        <span>Rs{priceRange[0]}</span>
+                        <span>RS{priceRange[1]}</span>
                       </div>
                     </div>
 
@@ -193,19 +202,21 @@ const Collection = () => {
           </motion.div>
 
           {/* Main Content */}
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
             className="flex-1"
           >
             {/* Sort Bar */}
-            <motion.div 
+            <motion.div
               variants={fadeIn}
               className="flex flex-col sm:flex-row justify-between items-center mb-8 bg-cream-50 p-5 rounded-lg border border-amber-100"
             >
               <p className="text-amber-800 mb-3 sm:mb-0">
-                Showing <span className="font-medium">{filterProducts.length}</span> {filterProducts.length === 1 ? 'item' : 'items'}
+                Showing{" "}
+                <span className="font-medium">{filterProducts.length}</span>{" "}
+                {filterProducts.length === 1 ? "item" : "items"}
               </p>
               <div className="flex items-center gap-3">
                 <span className="text-sm text-amber-700">Sort by:</span>
@@ -223,7 +234,7 @@ const Collection = () => {
 
             {/* Product Grid */}
             {filterProducts.length > 0 ? (
-              <motion.div 
+              <motion.div
                 variants={staggerContainer}
                 className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
               >
@@ -235,6 +246,7 @@ const Collection = () => {
                     className="bg-cream-50 rounded-lg overflow-hidden shadow-sm border border-amber-100 hover:shadow-md transition-shadow"
                   >
                     <ProductItem
+                      key={item._id}
                       id={item._id}
                       name={item.name}
                       image={item.image}
@@ -245,17 +257,21 @@ const Collection = () => {
                 ))}
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 variants={fadeIn}
                 className="bg-cream-50 p-10 rounded-lg border border-amber-100 text-center"
               >
-                <h3 className="text-xl text-amber-800 mb-3 font-medium">No matching items found</h3>
-                <p className="text-amber-700 mb-6">Try adjusting your filters or search terms</p>
-                <button 
+                <h3 className="text-xl text-amber-800 mb-3 font-medium">
+                  No matching items found
+                </h3>
+                <p className="text-amber-700 mb-6">
+                  Try adjusting your filters or search terms
+                </p>
+                <button
                   onClick={() => {
                     setCategory([]);
                     setPriceRange([0, 1000]);
-                    setSortOption('relevant');
+                    setSortOption("relevant");
                   }}
                   className="bg-amber-700 hover:bg-amber-800 text-cream-50 px-6 py-2.5 rounded-lg transition-colors"
                 >

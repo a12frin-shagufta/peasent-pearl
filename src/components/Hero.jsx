@@ -128,7 +128,7 @@ const Hero = () => {
           variants={item}
           className="text-lg md:text-xl text-amber-800 max-w-2xl mb-8 leading-relaxed"
         >
-          Timeless pieces crafted by skilled artisans, blending traditional techniques with contemporary designs
+          Each piece is carefully handmade by skilled artisans, combining traditional techniques with a modern look to create something beautiful and unique.
         </motion.p>
 
         {/* Arabic text */}
@@ -147,11 +147,11 @@ const Hero = () => {
           <motion.button 
             whileHover={{ 
               scale: 1.05,
-              boxShadow: "0 10px 25px -5px rgba(239, 68, 68, 0.3)"
+              boxShadow: "0 15px 30px -10px rgba(239, 68, 68, 0.4)"
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.97 }}
             onClick={() => navigate('/collection')}
-            className="px-8 py-3 text-black rounded-full transition-all duration-300 shadow-lg bg-red-500 hover:bg-red-600"
+            className="px-10 py-4 text-white rounded-full transition-all duration-300 shadow-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-sm sm:text-base font-medium"
           >
             Explore Collection
           </motion.button>
