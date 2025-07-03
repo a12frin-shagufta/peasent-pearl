@@ -1,10 +1,41 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { FaWhatsapp, FaEnvelope, FaInstagram, FaTiktok, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import axios from "axios";
+import {
+  FaWhatsapp,
+  FaEnvelope,
+  FaInstagram,
+  FaTiktok,
+  FaMapMarkerAlt,
+  FaPhone,
+} from "react-icons/fa";
 
 const Contact = () => {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    try {
+      await axios.post(`${backendUrl}/api/contact/submit`, form);
+      console.log("Message sent successfully!")
+      setForm({ name: "", email: "", message: "" });
+    } catch (err) {
+      console.log(err)
+    }
+  };
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -35,10 +66,10 @@ const Contact = () => {
               <div className="bg-green-100 p-3 rounded-full mr-4">
                 <FaWhatsapp className="text-green-600 text-2xl" />
               </div>
-              
+
               <div>
                 <h3 className="font-medium text-amber-900">WhatsApp</h3>
-                <p className="text-amber-600 text-sm">+92  317 1731789</p>
+                <p className="text-amber-600 text-sm">+92 317 1731789</p>
               </div>
             </motion.a>
 
@@ -53,8 +84,9 @@ const Contact = () => {
               </div>
               <div>
                 <h3 className="font-medium text-amber-900">Email</h3>
-                <p className="text-amber-600 text-sm">Pleasantpearljewelry@gmail.com
-</p>
+                <p className="text-amber-600 text-sm">
+                  Pleasantpearljewelry@gmail.com
+                </p>
               </div>
             </motion.a>
 
@@ -98,38 +130,53 @@ const Contact = () => {
             <h2 className="text-xl font-serif font-light text-amber-900 mb-6">
               Send us a message
             </h2>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-amber-700 mb-1">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-amber-700 mb-1"
+                >
                   Your Name
                 </label>
                 <input
                   type="text"
-                  id="name"
-                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
                   placeholder="Enter your name"
+                  required
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-amber-700 mb-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-amber-700 mb-1"
+                >
                   Email Address
                 </label>
                 <input
                   type="email"
-                  id="email"
-                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
                   placeholder="your@email.com"
+                  required
                 />
               </div>
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-amber-700 mb-1">
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-medium text-amber-700 mb-1"
+                >
                   Message
                 </label>
                 <textarea
-                  id="message"
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
                   rows="4"
-                  className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                   placeholder="Your message..."
+                  required
                 ></textarea>
               </div>
               <motion.button
@@ -155,8 +202,8 @@ const Contact = () => {
               <div>
                 <h3 className="font-medium text-amber-900">Address</h3>
                 <p className="text-amber-700">
-                  Faisalabad Pakistan<br />
-                
+                  Faisalabad Pakistan
+                  <br />
                 </p>
               </div>
             </div>
@@ -172,7 +219,8 @@ const Contact = () => {
               <div>
                 <h3 className="font-medium text-amber-900">Business Hours</h3>
                 <p className="text-amber-700">
-                  Mon-Sat: 12AM - 10PM<br />
+                  Mon-Sat: 12AM - 10PM
+                  <br />
                   Sunday: Closed
                 </p>
               </div>

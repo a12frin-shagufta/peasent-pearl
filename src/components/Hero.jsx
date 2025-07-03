@@ -4,11 +4,18 @@ import { motion } from 'framer-motion';
 import { FiInstagram } from 'react-icons/fi';
 import { FaTiktok } from 'react-icons/fa';
 import { FaWhatsapp } from "react-icons/fa";
+import { useContext } from 'react';
+import { ShopContext } from '../context/ShopContext';
+
 
 const Hero = () => {
+  const { offers } = useContext(ShopContext);
+const activeOffer = offers.length > 0 ? offers[0] : null;
+
   const navigate = useNavigate();
 
   // Animation variants
+  
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -46,13 +53,18 @@ const Hero = () => {
 
   return (
     <section className="relative w-full h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] overflow-hidden bg-amber-50">
-      {/* Animated background texture */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.1 }}
-        transition={{ duration: 1 }}
-        className="absolute inset-0 bg-[url('/texture.png')] mix-blend-multiply"
-      />
+  {/* 🎉 Offer Coupon Banner */}
+  {activeOffer && (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="absolute top-6 left-1/2 transform -translate-x-1/2 bg-amber-200 text-amber-900 px-4 py-2 rounded-full text-sm font-medium shadow-md z-30"
+    >
+      🎉 Surprise <span className="font-bold">{activeOffer.code}</span>  get {activeOffer.discountPercentage}% off! 💝
+    </motion.div>
+  )}
+
       
       {/* Floating decorative elements */}
       <motion.div

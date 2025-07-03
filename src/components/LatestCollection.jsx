@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { ShopContext } from '../context/ShopContext'
-import ProductItem from './ProductItem'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import React, { useContext, useEffect, useState } from 'react';
+import { ShopContext } from '../context/ShopContext';
+import ProductItem from './ProductItem';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 // Animation variants
 const containerVariants = {
@@ -14,7 +14,7 @@ const containerVariants = {
       delayChildren: 0.3
     }
   }
-}
+};
 
 const itemVariants = {
   hidden: { y: 30, opacity: 0 },
@@ -28,7 +28,7 @@ const itemVariants = {
       duration: 0.8
     }
   }
-}
+};
 
 const fadeInUp = {
   hidden: { y: 20, opacity: 0 },
@@ -40,62 +40,56 @@ const fadeInUp = {
       duration: 0.8
     }
   }
-}
+};
 
 const LatestCollection = () => {
-  const { products } = useContext(ShopContext)
-  const [latestProducts, setLatestProducts] = useState([])
+  const { products } = useContext(ShopContext);
+  const [latestProducts, setLatestProducts] = useState([]);
 
   useEffect(() => {
-    setLatestProducts(products.slice(0, 5))
-  }, [products])
+    if (Array.isArray(products)) {
+      const sortedByDate = [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setLatestProducts(sortedByDate.slice(0, 5));
+    }
+  }, [products]);
 
   return (
-    <motion.section 
+    <motion.section
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-50px" }}
       variants={containerVariants}
       className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
     >
-      <motion.div 
-        variants={fadeInUp}
-        className='text-center mb-10'
-      >
-        <h2 className='text-2xl md:text-3xl font-serif font-light text-amber-800 mb-2'>
+      <motion.div variants={fadeInUp} className="text-center mb-10">
+        <h2 className="text-2xl md:text-3xl font-serif font-light text-amber-800 mb-2">
           Just Dropped
         </h2>
-        <p className='text-sm md:text-base text-amber-600 max-w-2xl mx-auto'>
-          Discover our newest handcrafted designs that blend tradition with contemporary elegance
+        <p className="text-sm md:text-base text-amber-600 max-w-2xl mx-auto">
+          Discover our newest handcrafted designs that blend tradition with contemporary elegance.
         </p>
       </motion.div>
 
-      <motion.div 
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8"
-      >
+      <motion.div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 md:gap-8">
         {latestProducts.map((item) => (
-          <motion.div
-            key={item._id}
-            variants={itemVariants}
-          >
-            <ProductItem 
-              id={item._id} 
-              image={item.image} 
-              name={item.name} 
+          <motion.div key={item._id} variants={itemVariants}>
+            <ProductItem
+              id={item._id}
+              image={item.image?.[0]}
+              name={item.name}
               price={item.price}
+              finalPrice={item.finalPrice}
+              stock={item.stock}
             />
           </motion.div>
         ))}
       </motion.div>
 
       {latestProducts.length > 0 && (
-        <motion.div 
-          variants={fadeInUp}
-          className="text-center mt-12"
-        >
+        <motion.div variants={fadeInUp} className="text-center mt-12">
           <Link to={'/collection'}>
-            <motion.button 
-              whileHover={{ 
+            <motion.button
+              whileHover={{
                 scale: 1.05,
                 boxShadow: "0 5px 15px rgba(180, 83, 9, 0.2)"
               }}
@@ -108,7 +102,7 @@ const LatestCollection = () => {
         </motion.div>
       )}
     </motion.section>
-  )
-}
+  );
+};
 
-export default LatestCollection
+export default LatestCollection;

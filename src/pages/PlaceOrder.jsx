@@ -3,7 +3,8 @@ import { ShopContext } from '../context/ShopContext';
 import { motion } from 'framer-motion';
 
 const PlaceOrder = () => {
-  const { cartItems, products, currency, delivery_fee } = useContext(ShopContext);
+ const { cartItems, products, currency, delivery_fee, clearCart } = useContext(ShopContext);
+
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -21,39 +22,59 @@ const PlaceOrder = () => {
   useEffect(() => {
     const items = products
       .filter((product) => cartItems[product._id] > 0)
-      .map((product) => ({
-        ...product,
-        quantity: cartItems[product._id],
-        total: parseFloat(product.price) * cartItems[product._id],
-      }));
+      .map((product) => {
+        const unitPrice = product.finalPrice || product.price;
+        const quantity = cartItems[product._id];
+        return {
+          ...product,
+          quantity,
+          unitPrice,
+          total: unitPrice * quantity
+        };
+      });
     setCartData(items);
   }, [cartItems, products]);
 
-  const getSubtotal = () => cartData.reduce((sum, item) => sum + item.total, 0);
+  const getSubtotal = () =>
+    cartData.reduce((sum, item) => sum + item.total, 0);
+
   const subtotal = getSubtotal();
   const total = subtotal + delivery_fee;
-  const advanceAmount = form.paymentMethod === 'cod' ? (total / 2).toFixed(2) : total.toFixed(2);
+  const advanceAmount =
+    form.paymentMethod === 'cod'
+      ? (total / 2).toFixed(2)
+      : total.toFixed(2);
 
   const handleInput = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePlaceOrder = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+const handlePlaceOrder = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
-    try {
-      alert(`Paying ${currency} ${advanceAmount} via ${form.paymentMethod}`);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  try {
+    alert(`Paying ${currency} ${advanceAmount} via ${form.paymentMethod}`);
+    
+    // TODO: Send order data to backend here...
+
+    // ✅ Clear cart after successful order
+    clearCart();
+
+    // ✅ Optional: redirect or show thank you
+    // navigate("/thank-you");
+  } catch (error) {
+    console.error("Order submission failed:", error);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   const paymentMethods = [
-  { id: 'paymob', label: 'Paymob (JazzCash / Easypaisa / Bank Transfer)' },
-  { id: 'cod', label: 'Cash on Delivery (50% Advance)' },
-];
-
+    { id: 'paymob', label: 'Paymob (JazzCash / Easypaisa / Bank Transfer)' },
+    { id: 'cod', label: 'Cash on Delivery (50% Advance)' },
+  ];
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">

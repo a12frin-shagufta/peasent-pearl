@@ -101,8 +101,22 @@ const Product = () => {
             </h1>
             
             <p className="text-2xl font-medium text-amber-700">
-              {currency} {productData.price.toLocaleString()}
-            </p>
+  {productData.finalPrice && productData.finalPrice < productData.price ? (
+    <>
+      <span className="line-through text-gray-400 mr-2">
+        {currency} {productData.price.toLocaleString()}
+      </span>
+      <span className="text-amber-700">
+        {currency} {productData.finalPrice.toLocaleString()}
+      </span>
+    </>
+  ) : (
+    <>
+      {currency} {productData.price.toLocaleString()}
+    </>
+  )}
+</p>
+
             
             <div className="border-t border-b border-amber-200 py-4">
               <p className="text-gray-700 leading-relaxed">

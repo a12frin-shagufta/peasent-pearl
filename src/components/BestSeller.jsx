@@ -46,8 +46,10 @@ const BestSeller = () => {
   const [bestSeller, setBestSeller] = useState([]);
 
   useEffect(() => {
-    const bestProduct = products.filter((item) => item.bestseller);
-    setBestSeller(bestProduct.slice(0, 5));
+    if (Array.isArray(products)) {
+      const bestProduct = products.filter((item) => item.bestseller);
+      setBestSeller(bestProduct.slice(0, 5));
+    }
   }, [products]);
 
   return (
@@ -58,10 +60,7 @@ const BestSeller = () => {
       variants={containerVariants}
       className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
     >
-      <motion.div
-        variants={fadeInUp}
-        className="text-center mb-10"
-      >
+      <motion.div variants={fadeInUp} className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-serif font-light text-amber-800 mb-2">
           Trending Now
         </h2>
@@ -75,9 +74,11 @@ const BestSeller = () => {
           <motion.div key={item._id} variants={itemVariants}>
             <ProductItem
               id={item._id}
+              image={item.image?.[0]}
               name={item.name}
-              image={item.image}
               price={item.price}
+              finalPrice={item.finalPrice}
+              stock={item.stock}
             />
           </motion.div>
         ))}

@@ -13,28 +13,31 @@ const Cart = () => {
     removeFromCart,
     updateQuantity,
     delivery_fee,
-    navigate
+    navigate,
   } = useContext(ShopContext);
+
   const [cartData, setCartData] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const itemsInCart = products
       .filter((product) => cartItems[product._id] > 0)
-      .map((product) => ({
-        ...product,
-        quantity: cartItems[product._id],
-        total: (cartItems[product._id] * parseFloat(product.price)).toFixed(2),
-      }));
+      .map((product) => {
+        const priceToUse =
+          product.finalPrice && product.finalPrice < product.price
+            ? product.finalPrice
+            : product.price;
+
+        return {
+          ...product,
+          quantity: cartItems[product._id],
+          priceToUse,
+          total: (cartItems[product._id] * parseFloat(priceToUse)).toFixed(2),
+        };
+      });
 
     setCartData(itemsInCart);
   }, [cartItems, products]);
-
-  const getTotal = () => {
-    return cartData
-      .reduce((sum, item) => sum + parseFloat(item.total), 0)
-      .toFixed(2);
-  };
 
   const handleQuantityChange = (id, newQuantity) => {
     if (newQuantity >= 1) {
@@ -46,14 +49,7 @@ const Cart = () => {
     removeFromCart(id);
   };
 
-  const handleCheckout = () => {
-    setIsProcessing(true);
-    // Simulate processing
-    setTimeout(() => {
-      setIsProcessing(false);
-      // Add your checkout logic here
-    }, 1500);
-  };
+  const subtotal = cartData.reduce((sum, item) => sum + parseFloat(item.total), 0);
 
   if (cartData.length === 0) {
     return (
@@ -133,25 +129,30 @@ const Cart = () => {
                       </button>
                     </div>
 
-                    <p className="text-lg font-semibold text-amber-700 my-2">
-                      {currency} {item.price}
+                    <p className="text-2xl font-medium text-amber-700 mt-2">
+                      {item.finalPrice && item.finalPrice < item.price ? (
+                        <>
+                          <span className="line-through text-gray-400 mr-2">
+                            {currency} {item.price.toLocaleString()}
+                          </span>
+                          <span>{currency} {item.finalPrice.toLocaleString()}</span>
+                        </>
+                      ) : (
+                        <>{currency} {item.price.toLocaleString()}</>
+                      )}
                     </p>
 
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center border border-amber-200 rounded-lg">
                         <button
-                          onClick={() =>
-                            handleQuantityChange(item._id, item.quantity - 1)
-                          }
+                          onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
                           className="px-3 py-1 text-amber-700 hover:bg-amber-50 transition-colors"
                         >
                           -
                         </button>
                         <span className="px-4 py-1">{item.quantity}</span>
                         <button
-                          onClick={() =>
-                            handleQuantityChange(item._id, item.quantity + 1)
-                          }
+                          onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
                           className="px-3 py-1 text-amber-700 hover:bg-amber-50 transition-colors"
                         >
                           +
@@ -179,7 +180,7 @@ const Cart = () => {
               <div className="flex justify-between">
                 <span className="text-amber-700">Subtotal</span>
                 <span className="font-medium">
-                  {currency} {getTotal()}
+                  {currency} {subtotal.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -189,18 +190,15 @@ const Cart = () => {
                 </span>
               </div>
               <div className="flex justify-between pt-4 border-t border-amber-200">
+                <span className="text-lg font-medium text-amber-900">Total</span>
                 <span className="text-lg font-medium text-amber-900">
-                  Total
-                </span>
-                <span className="text-lg font-medium text-amber-900">
-                  {currency}{" "}
-                  {(parseFloat(getTotal()) + delivery_fee).toFixed(2)}
+                  {currency} {(subtotal + delivery_fee).toFixed(2)}
                 </span>
               </div>
             </div>
 
             <motion.button
-              onClick={() => navigate('/place-order')}
+              onClick={() => navigate("/place-order")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={isProcessing}

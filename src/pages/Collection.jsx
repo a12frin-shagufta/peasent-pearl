@@ -6,12 +6,13 @@ import ProductItem from "../components/ProductItem";
 
 const Collection = () => {
   const { products } = useContext(ShopContext);
-
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
   const [sortOption, setSortOption] = useState("relevant");
   const [priceRange, setPriceRange] = useState([0, 1000]);
+
+  const categories = ["Necklace", "Rings", "Bags", "Ringlet", "Anklet"];
 
   const toggleCategory = (e) => {
     const value = e.target.value;
@@ -23,6 +24,7 @@ const Collection = () => {
   };
 
   const applyFilter = () => {
+    if (!Array.isArray(products)) return;
     let filtered = [...products];
 
     if (category.length > 0) {
@@ -50,14 +52,9 @@ const Collection = () => {
     applyFilter();
   }, [category, sortOption, priceRange]);
 
-  // Animation variants
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   };
 
   const staggerContainer = {
@@ -71,16 +68,13 @@ const Collection = () => {
     },
   };
 
-  const categories = ["Necklace", "Rings", "Bags", "Ringlet", "Anklet"];
-
   return (
     <div className="min-h-screen bg-[#faf6f2]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        {/* Page Header */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial="hidden"
+          animate="visible"
+          variants={fadeIn}
           className="mb-12 text-center"
         >
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-amber-800 mb-3">
@@ -92,17 +86,17 @@ const Collection = () => {
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Filter Sidebar */}
+          {/* Sidebar */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial="hidden"
+            animate="visible"
+            variants={fadeIn}
             className="lg:w-72"
           >
             {/* Mobile Filter Toggle */}
             <button
               onClick={() => setShowFilter(!showFilter)}
-              className="lg:hidden flex items-center gap-2 mb-6 bg-amber-700 hover:bg-amber-800 text-cream-50 px-5 py-3 rounded-lg transition-colors"
+              className="lg:hidden flex items-center gap-2 mb-6 bg-amber-700 hover:bg-amber-800 text-white px-5 py-3 rounded-lg transition-colors"
             >
               <RiFilterLine className="text-lg" />
               FILTERS
@@ -115,16 +109,13 @@ const Collection = () => {
 
             {/* Filter Panel */}
             <AnimatePresence>
-              {(showFilter ||
-                !window.matchMedia("(max-width: 1023px)").matches) && (
+              {(showFilter || window.innerWidth >= 1024) && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`bg-cream-50 rounded-xl shadow-sm border border-amber-100 overflow-hidden ${
-                    showFilter ? "block" : "hidden"
-                  } lg:block`}
+                  className="bg-white rounded-xl shadow-sm border border-amber-100 lg:block"
                 >
                   <div className="p-6">
                     <h3 className="font-medium text-amber-900 mb-5 flex items-center gap-2 text-lg">
@@ -146,12 +137,12 @@ const Collection = () => {
                           >
                             <input
                               type="checkbox"
-                              className="w-4 h-4 text-amber-600 rounded border-amber-300 focus:ring-amber-200"
                               value={cat}
                               onChange={toggleCategory}
                               checked={category.includes(cat)}
+                              className="w-4 h-4 text-amber-600 rounded border-amber-300"
                             />
-                            <span className="text-amber-800">{cat}</span>
+                            <span>{cat}</span>
                           </motion.label>
                         ))}
                       </div>
@@ -162,60 +153,54 @@ const Collection = () => {
                       <h4 className="text-sm font-medium text-amber-800 mb-4 uppercase tracking-wider">
                         Price Range
                       </h4>
-                      <div className="px-2">
-                        <input
-                          type="range"
-                          min="0"
-                          max="1000"
-                          value={priceRange[1]}
-                          onChange={(e) =>
-                            setPriceRange([
-                              priceRange[0],
-                              parseInt(e.target.value),
-                            ])
-                          }
-                          className="w-full h-1.5 bg-amber-200 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-700"
-                        />
-                      </div>
-                      <div className="flex justify-between text-sm text-amber-700 mt-3">
-                        <span>Rs{priceRange[0]}</span>
-                        <span>RS{priceRange[1]}</span>
+                      <input
+                        type="range"
+                        min="0"
+                        max="1000"
+                        value={priceRange[1]}
+                        onChange={(e) =>
+                          setPriceRange([priceRange[0], parseInt(e.target.value)])
+                        }
+                        className="w-full h-2 bg-amber-200 rounded-full cursor-pointer"
+                      />
+                      <div className="flex justify-between text-sm text-amber-700 mt-2">
+                        <span>₹{priceRange[0]}</span>
+                        <span>₹{priceRange[1]}</span>
                       </div>
                     </div>
 
                     {/* Clear Filters */}
-                    {category.length > 0 || priceRange[1] < 1000 ? (
+                    {(category.length > 0 || priceRange[1] < 1000) && (
                       <button
                         onClick={() => {
                           setCategory([]);
                           setPriceRange([0, 1000]);
                         }}
-                        className="w-full mt-6 text-amber-700 hover:text-amber-800 text-sm font-medium underline transition-colors"
+                        className="w-full text-amber-700 hover:text-amber-800 text-sm font-medium underline mt-4"
                       >
                         Clear All Filters
                       </button>
-                    ) : null}
+                    )}
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
 
-          {/* Main Content */}
+          {/* Product Grid */}
           <motion.div
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
             className="flex-1"
           >
-            {/* Sort Bar */}
+            {/* Sort Options */}
             <motion.div
               variants={fadeIn}
-              className="flex flex-col sm:flex-row justify-between items-center mb-8 bg-cream-50 p-5 rounded-lg border border-amber-100"
+              className="flex flex-col sm:flex-row justify-between items-center mb-8 bg-white p-5 rounded-lg border border-amber-100"
             >
               <p className="text-amber-800 mb-3 sm:mb-0">
-                Showing{" "}
-                <span className="font-medium">{filterProducts.length}</span>{" "}
+                Showing <span className="font-medium">{filterProducts.length}</span>{" "}
                 {filterProducts.length === 1 ? "item" : "items"}
               </p>
               <div className="flex items-center gap-3">
@@ -223,7 +208,7 @@ const Collection = () => {
                 <select
                   onChange={(e) => setSortOption(e.target.value)}
                   value={sortOption}
-                  className="border border-amber-200 bg-cream-50 text-amber-800 text-sm px-4 py-2 rounded-lg focus:ring-amber-300 focus:border-amber-300"
+                  className="border border-amber-300 text-sm px-4 py-2 rounded-lg"
                 >
                   <option value="relevant">Relevant</option>
                   <option value="low-high">Price: Low to High</option>
@@ -242,30 +227,27 @@ const Collection = () => {
                   <motion.div
                     key={item._id}
                     variants={fadeIn}
-                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                    className="bg-cream-50 rounded-lg overflow-hidden shadow-sm border border-amber-100 hover:shadow-md transition-shadow"
+                    whileHover={{ y: -5 }}
+                    className="bg-white p-2 rounded-xl border border-amber-100"
                   >
                     <ProductItem
-                      key={item._id}
                       id={item._id}
+                      image={item.image?.[0]}
                       name={item.name}
-                      image={item.image}
                       price={item.price}
+                      finalPrice={item.finalPrice}
                       stock={item.stock}
                     />
                   </motion.div>
                 ))}
               </motion.div>
             ) : (
-              <motion.div
-                variants={fadeIn}
-                className="bg-cream-50 p-10 rounded-lg border border-amber-100 text-center"
-              >
-                <h3 className="text-xl text-amber-800 mb-3 font-medium">
-                  No matching items found
+              <motion.div variants={fadeIn} className="text-center py-12">
+                <h3 className="text-lg font-semibold text-amber-800 mb-2">
+                  No matching products found.
                 </h3>
-                <p className="text-amber-700 mb-6">
-                  Try adjusting your filters or search terms
+                <p className="text-sm text-amber-600 mb-6">
+                  Try adjusting your filters or search terms.
                 </p>
                 <button
                   onClick={() => {
@@ -273,9 +255,9 @@ const Collection = () => {
                     setPriceRange([0, 1000]);
                     setSortOption("relevant");
                   }}
-                  className="bg-amber-700 hover:bg-amber-800 text-cream-50 px-6 py-2.5 rounded-lg transition-colors"
+                  className="bg-amber-700 text-white px-6 py-2 rounded-lg hover:bg-amber-800"
                 >
-                  Reset All Filters
+                  Reset Filters
                 </button>
               </motion.div>
             )}
