@@ -18,11 +18,9 @@ const Product = () => {
     const foundProduct = products.find(item => String(item._id) === productId);
     if (foundProduct) {
       setProductData(foundProduct);
-      setSelectedImage(foundProduct.image[0]);
+      setSelectedImage(foundProduct.image && foundProduct.image.length > 0 ? foundProduct.image[0] : '/fallback-image.jpg');
     }
   }, [productId, products]);
-
- 
 
   if (!productData) return (
     <div className="flex items-center justify-center h-screen bg-amber-50">
@@ -65,7 +63,7 @@ const Product = () => {
               />
             </motion.div>
             <div className="flex gap-3 overflow-x-auto py-2 px-1">
-              {productData.image.map((img, i) => (
+              {productData.image && productData.image.length > 0 ? productData.image.map((img, i) => (
                 <motion.button
                   key={i}
                   onClick={() => setSelectedImage(img)}
@@ -85,7 +83,9 @@ const Product = () => {
                     loading="lazy"
                   />
                 </motion.button>
-              ))}
+              )) : (
+                <div className="text-sm text-gray-500">No images available</div>
+              )}
             </div>
           </div>
 
@@ -101,26 +101,25 @@ const Product = () => {
             </h1>
             
             <p className="text-2xl font-medium text-amber-700">
-  {productData.finalPrice && productData.finalPrice < productData.price ? (
-    <>
-      <span className="line-through text-gray-400 mr-2">
-        {currency} {productData.price.toLocaleString()}
-      </span>
-      <span className="text-amber-700">
-        {currency} {productData.finalPrice.toLocaleString()}
-      </span>
-    </>
-  ) : (
-    <>
-      {currency} {productData.price.toLocaleString()}
-    </>
-  )}
-</p>
-
+              {productData.finalPrice && productData.finalPrice < productData.price ? (
+                <>
+                  <span className="line-through text-gray-400 mr-2">
+                    {currency} {productData.price.toLocaleString()}
+                  </span>
+                  <span className="text-amber-700">
+                    {currency} {productData.finalPrice.toLocaleString()}
+                  </span>
+                </>
+              ) : (
+                <>
+                  {currency} {productData.price.toLocaleString()}
+                </>
+              )}
+            </p>
             
             <div className="border-t border-b border-amber-200 py-4">
               <p className="text-gray-700 leading-relaxed">
-                {productData.description || 'This exquisite piece is handcrafted with meticulous attention to detail, blending traditional techniques with contemporary design.'}
+                {productData.description || 'No description provided.'}
               </p>
             </div>
 
@@ -155,7 +154,11 @@ const Product = () => {
               disabled={productData.stock === 0 || isAddingToCart}
               whileHover={productData.stock > 0 ? { scale: 1.02 } : {}}
               whileTap={productData.stock > 0 ? { scale: 0.98 } : {}}
-              onClick={()=>addToCart(productData._id,quantity)}
+              onClick={() => {
+                setIsAddingToCart(true);
+                addToCart(productData._id, quantity);
+                setTimeout(() => setIsAddingToCart(false), 1000);
+              }}
               className={`w-full flex items-center justify-center gap-2 px-8 py-3 rounded-full font-medium transition-all duration-200 ${
                 productData.stock > 0
                   ? 'bg-amber-600 text-white hover:bg-amber-700 shadow-md hover:shadow-lg'
@@ -174,23 +177,22 @@ const Product = () => {
 
             {/* Product Details */}
             <div className="mt-8 space-y-3">
-  <h3 className="text-lg font-medium text-amber-900">Details</h3>
-  <ul className="text-sm text-gray-700 space-y-2">
-    <li className="flex">
-      <span className="w-24 text-amber-600">Size:</span>
-      <span>
-        {productData.details && productData.details !== 'required'
-          ? productData.details
-          : 'Standard sizing'}
-      </span>
-    </li>
-    <li className="flex">
-      <span className="w-24 text-amber-600">Category:</span>
-      <span>{productData.category}</span>
-    </li>
-  </ul>
-</div>
-
+              <h3 className="text-lg font-medium text-amber-900">Product Details</h3>
+              <ul className="text-sm text-gray-700 space-y-2">
+                <li className="flex">
+                  <span className="w-24 text-amber-600">Details:</span>
+                  <span>{productData.details || 'No details provided'}</span>
+                </li>
+                <li className="flex">
+                  <span className="w-24 text-amber-600">Size:</span>
+                  <span>{productData.size || 'Not specified'}</span>
+                </li>
+                <li className="flex">
+                  <span className="w-24 text-amber-600">Category:</span>
+                  <span>{productData.category}</span>
+                </li>
+              </ul>
+            </div>
           </motion.div>
         </div>
       </div>
