@@ -85,33 +85,44 @@ const ShopContextProvider = (props) => {
     localStorage.removeItem("guestCart");
   };
 
-  const addToCart = (itemId, quantity = 1) => {
-    setCartItems((prevCart) => {
-      const updatedCart = { ...prevCart };
-      updatedCart[itemId] = (updatedCart[itemId] || 0) + quantity;
-      return updatedCart;
-    });
-  };
+const addToCart = (productId, quantity = 1, color = null) => {
+  const cartKey = `${productId}_${color || "default"}`;
+  setCartItems((prevCart) => {
+    const prevItem = prevCart[cartKey] || {};
+    return {
+      ...prevCart,
+      [cartKey]: {
+        quantity: (prevItem.quantity || 0) + quantity,
+      },
+    };
+  });
+};
 
-  const updateQuantity = (itemId, quantity) => {
-    setCartItems((prevCart) => {
-      const updatedCart = { ...prevCart };
-      updatedCart[itemId] = quantity;
-      return updatedCart;
-    });
-  };
+const updateQuantity = (cartKey, newQuantity) => {
+  setCartItems((prevCart) => {
+    const prevItem = prevCart[cartKey];
+    if (!prevItem) return prevCart;
+    return {
+      ...prevCart,
+      [cartKey]: {
+        ...prevItem,
+        quantity: newQuantity,
+      },
+    };
+  });
+};
 
-  const removeFromCart = (itemId) => {
-    setCartItems((prevCart) => {
-      const updatedCart = { ...prevCart };
-      delete updatedCart[itemId];
-      return updatedCart;
-    });
-  };
+const removeFromCart = (cartKey) => {
+  setCartItems((prevCart) => {
+    const updated = { ...prevCart };
+    delete updated[cartKey];
+    return updated;
+  });
+};
 
-  const getCartCount = () =>
-    Object.values(cartItems).reduce((sum, qty) => sum + qty, 0);
 
+const getCartCount = () =>
+  Object.values(cartItems).reduce((sum, item) => sum + (item.quantity || 0), 0);
 
   
 

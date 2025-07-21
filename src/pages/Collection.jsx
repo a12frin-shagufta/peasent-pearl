@@ -221,7 +221,10 @@ const Collection = () => {
                   >
                     <ProductItem
                       id={item._id}
-                      image={item.image?.[0]}
+                      image={
+    item.variants?.[0]?.images?.[0] || item.image?.[0] || "/fallback.jpg"
+  }
+
                       name={item.name}
                       price={item.price}
                       finalPrice={item.finalPrice}

@@ -23,20 +23,31 @@ const PlaceOrder = () => {
   });
 
   useEffect(() => {
-    const items = products
-      .filter((product) => cartItems[product._id] > 0)
-      .map((product) => {
-        const unitPrice = product.finalPrice || product.price;
-        const quantity = cartItems[product._id];
-        return {
-          ...product,
-          quantity,
-          unitPrice,
-          total: unitPrice * quantity,
-        };
-      });
-    setCartData(items);
-  }, [cartItems, products]);
+  const items = Object.entries(cartItems).map(([key, value]) => {
+    const [productId, color] = key.split("_");
+    const product = products.find((p) => p._id === productId);
+    if (!product) return null;
+
+    const variant = product.variants?.find((v) => v.color === color);
+    const image = variant?.images?.[0] || product.image;
+    const unitPrice = product.finalPrice || product.price;
+    const quantity = value.quantity || 1;
+
+    return {
+      _id: key,
+      productId,
+      name: product.name,
+      image,
+      color,
+      unitPrice,
+      quantity,
+      total: unitPrice * quantity,
+    };
+  }).filter(Boolean);
+
+  setCartData(items);
+}, [cartItems, products]);
+
 
   const getSubtotal = () => cartData.reduce((sum, item) => sum + item.total, 0);
 

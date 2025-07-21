@@ -14,31 +14,37 @@ const Cart = () => {
     updateQuantity,
     delivery_fee,
     navigate,
-    clearCart
+    clearCart,
   } = useContext(ShopContext);
 
   const [cartData, setCartData] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    const itemsInCart = products
-      .filter((product) => cartItems[product._id] > 0)
-      .map((product) => {
-        const priceToUse =
-          product.finalPrice && product.finalPrice < product.price
-            ? product.finalPrice
-            : product.price;
+  const itemsInCart = Object.entries(cartItems).map(([key, value]) => {
+    const [productId, color] = key.split("_");
+    const product = products.find((p) => p._id === productId);
+    if (!product) return null;
 
-        return {
-          ...product,
-          quantity: cartItems[product._id],
-          priceToUse,
-          total: (cartItems[product._id] * parseFloat(priceToUse)).toFixed(2),
-        };
-      });
+    const variant = product.variants?.find((v) => v.color === color);
+    const image = variant?.images?.[0] || product.image;
+    const priceToUse = product.finalPrice || product.price;
+    const quantity = value.quantity || 1;
 
-    setCartData(itemsInCart);
-  }, [cartItems, products]);
+    return {
+      ...product,
+      _id: key, // this is the composite key: productId_color
+      quantity,
+      priceToUse,
+      color,
+      image,
+      total: (quantity * priceToUse).toFixed(2),
+    };
+  }).filter(Boolean); // Remove null entries
+
+  setCartData(itemsInCart);
+}, [cartItems, products]);
+
 
   const handleQuantityChange = (id, newQuantity) => {
     if (newQuantity >= 1) {
@@ -112,7 +118,7 @@ const Cart = () => {
                 >
                   <div className="flex-shrink-0">
                     <img
-                      src={item.image[0]}
+                      src={item.image}
                       alt={item.name}
                       className="w-full h-32 sm:w-32 sm:h-32 object-cover rounded-lg"
                     />
@@ -130,13 +136,19 @@ const Cart = () => {
                       </button>
                     </div>
 
+                    <p className="text-sm text-gray-500 mt-1">
+                      Color: {item.color}
+                    </p>
+
                     <p className="text-2xl font-medium text-amber-700 mt-2">
                       {item.finalPrice && item.finalPrice < item.price ? (
                         <>
                           <span className="line-through text-gray-400 mr-2">
                             {currency} {item.price.toLocaleString()}
                           </span>
-                          <span>{currency} {item.finalPrice.toLocaleString()}</span>
+                          <span>
+                            {currency} {item.finalPrice.toLocaleString()}
+                          </span>
                         </>
                       ) : (
                         <>{currency} {item.price.toLocaleString()}</>
@@ -146,14 +158,18 @@ const Cart = () => {
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center border border-amber-200 rounded-lg">
                         <button
-                          onClick={() => handleQuantityChange(item._id, item.quantity - 1)}
+                          onClick={() =>
+                            handleQuantityChange(item._id, item.quantity - 1)
+                          }
                           className="px-3 py-1 text-amber-700 hover:bg-amber-50 transition-colors"
                         >
                           -
                         </button>
                         <span className="px-4 py-1">{item.quantity}</span>
                         <button
-                          onClick={() => handleQuantityChange(item._id, item.quantity + 1)}
+                          onClick={() =>
+                            handleQuantityChange(item._id, item.quantity + 1)
+                          }
                           className="px-3 py-1 text-amber-700 hover:bg-amber-50 transition-colors"
                         >
                           +
@@ -191,7 +207,9 @@ const Cart = () => {
                 </span>
               </div>
               <div className="flex justify-between pt-4 border-t border-amber-200">
-                <span className="text-lg font-medium text-amber-900">Total</span>
+                <span className="text-lg font-medium text-amber-900">
+                  Total
+                </span>
                 <span className="text-lg font-medium text-amber-900">
                   {currency} {(subtotal + delivery_fee).toFixed(2)}
                 </span>
@@ -219,15 +237,14 @@ const Cart = () => {
             </motion.button>
 
             <motion.button
-      onClick={clearCart}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-all"
-    >
-      <FiTrash2 />
-      Reset Cart
-    </motion.button>
-
+              onClick={clearCart}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-2 rounded-full text-sm font-medium bg-red-100 text-red-700 hover:bg-red-200 transition-all"
+            >
+              <FiTrash2 />
+              Reset Cart
+            </motion.button>
 
             <p className="text-xs text-amber-600 mt-4 text-center">
               Secure delivery within 11-13 business days
