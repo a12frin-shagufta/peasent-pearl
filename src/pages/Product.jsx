@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ShopContext } from '../context/ShopContext';
-import { motion } from 'framer-motion';
-import { 
-  FiArrowLeft, 
-  FiShoppingCart, 
+import React, { useContext, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FiArrowLeft,
+  FiShoppingCart,
   FiShare2,
   FiZoomIn,
-} from 'react-icons/fi';
-import { FaGem, FaWeightHanging } from 'react-icons/fa';
+  FiChevronDown,
+} from "react-icons/fi";
+import { FaGem, FaWeightHanging } from "react-icons/fa";
 
 const Product = () => {
   const { productId } = useParams();
@@ -21,9 +22,10 @@ const Product = () => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [zoomActive, setZoomActive] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState(null); // ✅ state for accordion
 
   useEffect(() => {
-    const foundProduct = products.find(item => item._id === productId);
+    const foundProduct = products.find((item) => item._id === productId);
     if (foundProduct) {
       setProduct(foundProduct);
       if (foundProduct.variants?.length > 0) {
@@ -42,13 +44,15 @@ const Product = () => {
   const handleBuyNow = () => {
     if (!selectedVariant) return;
     addToCart(product._id, quantity, selectedVariant.color);
-    navigate('/place-order');
+    navigate("/place-order");
   };
 
   if (!product) {
     return (
       <div className="min-h-screen flex justify-center items-center">
-        <div className="animate-pulse text-xl text-amber-700">Loading product...</div>
+        <div className="animate-pulse text-xl text-amber-700">
+          Loading product...
+        </div>
       </div>
     );
   }
@@ -60,7 +64,7 @@ const Product = () => {
 
   return (
     <motion.div
-      className="min-h-screen  py-12 px-4 sm:px-6 lg:px-8"
+      className="min-h-screen py-12 px-4 sm:px-6 lg:px-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -106,7 +110,9 @@ const Product = () => {
                   key={index}
                   onClick={() => setActiveImageIndex(index)}
                   className={`flex-shrink-0 w-16 h-16 rounded-md border-2 overflow-hidden ${
-                    activeImageIndex === index ? 'border-amber-600' : 'border-gray-200'
+                    activeImageIndex === index
+                      ? "border-amber-600"
+                      : "border-gray-200"
                   }`}
                 >
                   <img
@@ -138,7 +144,9 @@ const Product = () => {
 
           {/* Product Info */}
           <div className="space-y-6">
-            <h1 className="text-3xl font-serif font-light text-amber-900">{product.name}</h1>
+            <h1 className="text-3xl font-serif font-light text-amber-900">
+              {product.name}
+            </h1>
 
             {/* Price */}
             <div className="space-y-1">
@@ -158,12 +166,14 @@ const Product = () => {
               )}
             </div>
 
-            {/* Product Meta */}
+            {/* Meta */}
             <div className="grid grid-cols-2 gap-3 text-sm">
               {product.material && (
                 <div className="flex items-center">
                   <FaGem className="text-amber-600 mr-2" />
-                  <span>{product.material.type} {product.material.purity}</span>
+                  <span>
+                    {product.material.type} {product.material.purity}
+                  </span>
                 </div>
               )}
               {product.weight && (
@@ -190,8 +200,8 @@ const Product = () => {
                       }}
                       className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
                         selectedVariant?._id === variant._id
-                          ? 'border-amber-600'
-                          : 'border-gray-300'
+                          ? "border-amber-600"
+                          : "border-gray-300"
                       }`}
                       title={variant.color}
                     >
@@ -205,11 +215,12 @@ const Product = () => {
               </div>
             )}
 
-            {/* Quantity + Buttons */}
+            {/* Quantity & Buttons */}
             <div className="pt-4 border-t border-amber-100 space-y-4">
-              {/* Quantity */}
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Quantity</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Quantity
+                </span>
                 <div className="flex items-center border rounded-md">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -227,7 +238,6 @@ const Product = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex space-x-3">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -236,17 +246,17 @@ const Product = () => {
                   disabled={!selectedVariant || isAddingToCart || product.stock <= 0}
                   className={`flex-1 py-3 rounded-md font-medium flex items-center justify-center space-x-2 ${
                     !selectedVariant || product.stock <= 0
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-amber-600 text-white hover:bg-amber-700'
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-amber-600 text-white hover:bg-amber-700"
                   }`}
                 >
                   <FiShoppingCart />
                   <span>
                     {isAddingToCart
-                      ? 'Adding...'
+                      ? "Adding..."
                       : product.stock <= 0
-                      ? 'Out of Stock'
-                      : 'Add to Cart'}
+                      ? "Out of Stock"
+                      : "Add to Cart"}
                   </span>
                 </motion.button>
 
@@ -257,8 +267,8 @@ const Product = () => {
                   disabled={!selectedVariant || product.stock <= 0}
                   className={`flex-1 py-3 rounded-md font-medium flex items-center justify-center ${
                     !selectedVariant || product.stock <= 0
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-rose-600 text-white hover:bg-rose-700'
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-rose-600 text-white hover:bg-rose-700"
                   }`}
                 >
                   Buy Now
@@ -267,29 +277,76 @@ const Product = () => {
             </div>
 
             {/* Description */}
-            {/* Description & Details */}
-<div className="pt-4 border-t border-amber-100">
-  <h3 className="text-lg font-medium text-amber-900 mb-3">Description</h3>
-  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-    {product.description || "No description available."}
-  </p>
+            <div className="pt-4 border-t border-amber-100">
+              <h3 className="text-lg font-medium text-amber-900 mb-3">
+                Description
+              </h3>
+              <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                {product.description || "No description available."}
+              </p>
 
-  {product.details && (
-    <div className="mt-6">
-      <h4 className="text-md font-medium text-amber-900 mb-2">Product Details</h4>
-      {Array.isArray(product.details) ? (
-        <ul className="list-disc list-inside space-y-1 text-gray-700 text-sm">
-          {product.details.map((detail, i) => (
-            <li key={i}>{detail}</li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-sm text-gray-700">{product.details}</p>
-      )}
-    </div>
-  )}
-</div>
+              {product.details && (
+                <div className="mt-6">
+                  <h4 className="text-md font-medium text-amber-900 mb-2">
+                    Product Details
+                  </h4>
+                  {Array.isArray(product.details) ? (
+                    <ul className="list-disc list-inside space-y-1 text-gray-700 text-sm">
+                      {product.details.map((detail, i) => (
+                        <li key={i}>{detail}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-gray-700">{product.details}</p>
+                  )}
+                </div>
+              )}
+            </div>
 
+            {/* ✅ FAQ Section */}
+            {product.faqs && product.faqs.length > 0 && (
+              <div className="pt-6 border-t border-amber-100">
+                <h3 className="text-lg font-medium text-amber-900 mb-4">
+                  Frequently Asked Questions
+                </h3>
+                <div className="space-y-3">
+                  {product.faqs.map((faq, idx) => (
+                    <div
+                      key={idx}
+                      className="border rounded-lg overflow-hidden"
+                    >
+                      <button
+                        onClick={() =>
+                          setOpenFaqIndex(openFaqIndex === idx ? null : idx)
+                        }
+                        className="w-full flex justify-between items-center px-4 py-3 text-left font-medium text-gray-800 hover:bg-amber-50"
+                      >
+                        {faq.question}
+                        <FiChevronDown
+                          className={`transform transition-transform ${
+                            openFaqIndex === idx ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      <AnimatePresence>
+                        {openFaqIndex === idx && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="px-4 pb-3 text-gray-600 text-sm bg-amber-50/30"
+                          >
+                            {faq.answer}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Share */}
             <div className="pt-4 border-t border-amber-100 flex justify-between items-center text-sm">
@@ -302,10 +359,12 @@ const Product = () => {
                     url: shareUrl,
                   };
                   if (navigator.share) {
-                    navigator.share(shareData).catch((err) => console.log('Share failed:', err));
+                    navigator.share(shareData).catch((err) =>
+                      console.log("Share failed:", err)
+                    );
                   } else {
                     navigator.clipboard.writeText(shareUrl);
-                    alert('Link copied to clipboard!');
+                    alert("Link copied to clipboard!");
                   }
                 }}
                 className="flex items-center text-gray-600 hover:text-amber-700 transition-all"
