@@ -199,7 +199,7 @@ const LatestCollection = () => {
         <h2 className="text-3xl md:text-3xl lg:text-4xl font-serif font-bold text-gray-900 mb-4">
           Latest <span className="bg-[#D87D8F] bg-clip-text text-transparent">Collection ✨</span>
         </h2>
-        <p className="text-sm md:text-base text-amber-600 max-w-2xl mx-auto">
+        <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
           Discover our newest handcrafted designs that blend tradition with contemporary elegance.
         </p>
       </motion.div>

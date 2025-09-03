@@ -7,6 +7,7 @@ import {
   FiShoppingCart,
   FiShare2,
   FiZoomIn,
+   FiCheck,
   FiChevronDown,
 } from "react-icons/fi";
 import { FaGem, FaWeightHanging } from "react-icons/fa";
@@ -185,12 +186,12 @@ const Product = () => {
             </div>
 
             {/* Variants */}
-            {product.variants?.length > 0 && (
-              <div className="pt-4 border-t border-amber-100">
-                <h3 className="text-sm font-medium text-gray-700 mb-3">
-                  COLOR: {selectedVariant?.color}
+               {product.variants?.length > 0 && (
+              <div className="pt-6 border-t border-gray-100">
+                <h3 className="text-sm font-semibold text-gray-800 mb-4 uppercase tracking-wider">
+                  SELECT COLOR: <span className="text-pink-600">{selectedVariant?.color}</span>
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {product.variants.map((variant) => (
                     <button
                       key={variant._id}
@@ -198,56 +199,60 @@ const Product = () => {
                         setSelectedVariant(variant);
                         setActiveImageIndex(0);
                       }}
-                      className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                      className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all relative ${
                         selectedVariant?._id === variant._id
-                          ? "border-amber-600"
-                          : "border-gray-300"
+                          ? "border-pink-500 shadow-lg"
+                          : "border-gray-300 hover:border-pink-300"
                       }`}
                       title={variant.color}
                     >
                       <div
-                        className="w-8 h-8 rounded-full"
+                        className="w-10 h-10 rounded-full"
                         style={{ backgroundColor: variant.color.toLowerCase() }}
                       />
+                      {selectedVariant?._id === variant._id && (
+                        <FiCheck className="absolute text-white text-sm bg-pink-500 rounded-full p-1" />
+                      )}
                     </button>
                   ))}
                 </div>
               </div>
             )}
-
             {/* Quantity & Buttons */}
-            <div className="pt-4 border-t border-amber-100 space-y-4">
+           <div className="pt-6 border-t border-gray-100 space-y-6">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-semibold text-gray-800">
                   Quantity
                 </span>
-                <div className="flex items-center border rounded-md">
+                <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-1 text-gray-600 hover:bg-amber-50"
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
                   >
                     -
                   </button>
-                  <span className="px-4 py-1">{quantity}</span>
+                  <span className="px-6 py-2 font-medium text-gray-900 min-w-[3rem] text-center">
+                    {quantity}
+                  </span>
                   <button
                     onClick={() => setQuantity(Math.min(10, quantity + 1))}
-                    className="px-3 py-1 text-gray-600 hover:bg-amber-50"
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 transition-colors"
                   >
                     +
                   </button>
                 </div>
               </div>
 
-              <div className="flex space-x-3">
+              <div className="flex space-x-4">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleAddToCart}
                   disabled={!selectedVariant || isAddingToCart || product.stock <= 0}
-                  className={`flex-1 py-3 rounded-md font-medium flex items-center justify-center space-x-2 ${
+                  className={`flex-1 py-4 rounded-xl font-semibold flex items-center justify-center space-x-3 transition-all ${
                     !selectedVariant || product.stock <= 0
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-amber-600 text-white hover:bg-amber-700"
+                      : "bg-gradient-to-r from-pink-600 to-rose-600 text-white hover:from-pink-700 hover:to-rose-700 shadow-lg hover:shadow-xl"
                   }`}
                 >
                   <FiShoppingCart />
@@ -265,15 +270,18 @@ const Product = () => {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleBuyNow}
                   disabled={!selectedVariant || product.stock <= 0}
-                  className={`flex-1 py-3 rounded-md font-medium flex items-center justify-center ${
+                  className={`flex-1 py-4 rounded-xl font-semibold flex items-center justify-center transition-all ${
                     !selectedVariant || product.stock <= 0
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-rose-600 text-white hover:bg-rose-700"
+                      : "bg-gray-900 text-white hover:bg-gray-800 shadow-lg hover:shadow-xl"
                   }`}
                 >
                   Buy Now
                 </motion.button>
               </div>
+
+              {/* Stock indicator */}
+             
             </div>
 
             {/* Description */}

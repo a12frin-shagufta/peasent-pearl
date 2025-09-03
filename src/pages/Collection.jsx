@@ -116,7 +116,7 @@ const Collection = () => {
           className="mb-12 text-center"
         >
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-4">
-            Our <span className="bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">Collection</span>
+            What's <span className="bg-[#D87D8F] bg-clip-text text-transparent">New</span>
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
             Discover timeless pieces crafted with precision and passion

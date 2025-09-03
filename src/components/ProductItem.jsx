@@ -129,7 +129,7 @@ const ProductItem = ({ id, image, name, price, finalPrice, stock, badgeType }) =
           <div className="flex flex-col">
             <div className="flex items-center space-x-2">
               {/* Final Price */}
-              <p className="text-lg font-bold text-gray-800">
+              <p className="text-lg font-bold text-amber-700">
                 {currency} {Number(finalPrice).toLocaleString()}
               </p>
               {/* Discount % */}
