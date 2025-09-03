@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-amber-50 border-t border-amber-200 py-8 px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[#d87d8f53] b py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="flex flex-col items-center sm:items-start">
             <img 
-              src="./assets/image/logo1.png" 
+              src="./image/logo1.png" 
               alt="Pleasant Pearl" 
               className="h-12 w-auto mb-4"
             />

@@ -61,7 +61,7 @@ const OurPolicy = () => {
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
       variants={containerVariants}
-      className="bg-gradient-to-b from-amber-50 to-amber-100 py-16 px-4 sm:px-6 lg:px-8"
+      className="bg-whites py-16 px-4 sm:px-6 lg:px-8"
     >
       <motion.div className="max-w-4xl mx-auto">
         <motion.div 

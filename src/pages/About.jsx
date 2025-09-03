@@ -54,7 +54,7 @@ const About = () => {
           {/* Left Side - Brand Logo */}
           <motion.div 
             variants={item}
-            className="lg:w-1/2 p-8 md:p-12 flex items-center justify-center bg-gradient-to-b from-amber-50 to-amber-100 relative overflow-hidden"
+            className="lg:w-1/2 p-8 md:p-12 flex items-center justify-center bg-[#d87d8f4d] relative overflow-hidden"
           >
             {/* Floating decorative elements */}
             <motion.div
@@ -71,7 +71,7 @@ const About = () => {
 
             <div className="relative w-full max-w-md z-10">
               <motion.img 
-                src="./assets/image/logo1.png" 
+                src="./image/logo1.png" 
                 alt="Pleasant Pearl Logo" 
                 className="w-full h-auto object-contain"
                 initial={{ scale: 0.9, opacity: 0 }}

@@ -73,16 +73,22 @@ const BestSeller = () => {
         {bestSeller.map((item) => (
           <motion.div key={item._id} variants={itemVariants}>
             <ProductItem
-              id={item._id}
-              image={
-    item.variants?.[0]?.images?.[0] || item.image?.[0] || "/fallback.jpg"
+  id={item._id}
+  image={
+    item.variants?.[0]?.images?.[0] ||
+    (Array.isArray(item.image) ? item.image[0] : item.image) ||
+    "/fallback.jpg"
   }
+  name={item.name}
+  price={item.price}
+  finalPrice={item.finalPrice}
+  stock={
+    item.variants?.some((v) => v.stock > 0) ? 1 : item.stock || 0
+  }
+  badgeType="trend" // ✅ always "Trend"
+/>
 
-              name={item.name}
-              price={item.price}
-              finalPrice={item.finalPrice}
-              stock={item.stock}
-            />
+
           </motion.div>
         ))}
       </motion.div>

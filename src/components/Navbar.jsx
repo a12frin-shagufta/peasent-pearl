@@ -10,8 +10,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Home', path: '/' },
-    { name: 'Collections', path: '/collection' },
-   
+    { name: 'Collections', path: '/collection', badge: 'New' }, // 👈 Added badge
     { name: 'Contact', path: '/contact' },
   ];
 
@@ -19,7 +18,7 @@ const Navbar = () => {
     <nav className="w-full sticky top-0 z-50 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Mobile menu button and logo */}
+          {/* Mobile menu button */}
           <div className="flex items-center md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -33,7 +32,7 @@ const Navbar = () => {
           <div className="flex-shrink-0 flex items-center">
             <NavLink to="/" className="mx-auto md:mx-0">
               <img 
-                src="./assets/image/logo1.png" 
+                src="./image/logo1.png" 
                 alt="logo" 
                 className="h-15 w-auto md:h-18 lg:h-20" 
               />
@@ -41,18 +40,24 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:justify-center md:flex-grow md:space-x-4 lg:space-x-8">
+          <div className="hidden md:flex md:items-center md:justify-center md:flex-grow md:space-x-6 lg:space-x-10">
             {navLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.path}
                 className={({ isActive }) => `
-                  px-3 py-2 text-sm font-medium flex flex-col items-center
+                  relative px-3 py-2 text-sm font-medium flex items-center
                   ${isActive ? 'text-[#D87D8F]' : 'text-gray-700 hover:text-[#D87D8F]'}
                 `}
               >
-                <span>{link.name}</span>
-                <span className={`mt-1 h-0.5 w-5 ${link.isActive ? 'bg-[#D87D8F]' : 'bg-transparent'}`}></span>
+                {link.name}
+
+                {/* 👇 New glowing badge for Collections */}
+                {link.badge && (
+                  <span className="ml-2 px-2 py-0.5 text-xs font-semibold text-white bg-[#D87D8F] rounded-full animate-pulse shadow-md">
+                    {link.badge}
+                  </span>
+                )}
               </NavLink>
             ))}
           </div>
@@ -65,7 +70,7 @@ const Navbar = () => {
             >
               <CiShoppingCart className="h-6 w-6 text-gray-700 group-hover:text-[#D87D8F]" />
               {getCartCount() > 0 && (
-                <span className="absolute -top-0 -right-0 w-5 h-5 bg-[#D87D8F] text-black text-xs font-bold rounded-full flex items-center justify-center shadow-sm z-10">
+                <span className="absolute -top-0 -right-0 w-5 h-5 bg-[#D87D8F] text-white text-xs font-bold rounded-full flex items-center justify-center shadow-sm z-10">
                   {getCartCount()}
                 </span>
               )}
@@ -83,13 +88,22 @@ const Navbar = () => {
               to={link.path}
               onClick={() => setIsMenuOpen(false)}
               className={({ isActive }) => `
-                block px-3 py-2 rounded-md text-base font-medium
+                flex items-center justify-between px-3 py-2 rounded-md text-base font-medium
                 ${isActive ? 'bg-[#D87D8F]/10 text-[#D87D8F]' : 'text-gray-700 hover:bg-gray-100'}
               `}
             >
               {link.name}
+
+              {/* 👇 Mobile badge */}
+              {link.badge && (
+                <span className="ml-2 px-2 py-0.5 text-xs font-semibold text-white bg-[#D87D8F] rounded-full animate-pulse shadow-md">
+                  {link.badge}
+                </span>
+              )}
             </NavLink>
           ))}
+
+          {/* Cart in mobile */}
           <NavLink
             to="/cart"
             onClick={() => setIsMenuOpen(false)}

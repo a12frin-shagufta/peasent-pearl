@@ -10,6 +10,7 @@ const ShopContextProvider = (props) => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [offers, setOffers] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const [categories, setCategories] = useState([]); // New state for categories
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem("guestCart");
@@ -34,41 +35,44 @@ const ShopContextProvider = (props) => {
   
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productRes, offerRes, categoryRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/product/list`),
-          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/offer/active`),
-          axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/category/list`), // Fetch categories
-        ]);
+  const fetchData = async () => {
+    try {
+      const [productRes, offerRes, categoryRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/product/list`),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/offer/active`),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/category/list`),
+      ]);
 
-        let productList = productRes.data.products || [];
-        const activeOffers = offerRes.data.offers || [];
-        const categoryList = categoryRes.data.categories || [];
+      let productList = productRes.data.products || [];
+      const activeOffers = offerRes.data.offers || [];
+      const categoryList = categoryRes.data.categories || [];
 
-        const updatedProducts = productList.map((product) => {
-          let finalPrice = product.price;
-          activeOffers.forEach((offer) => {
-            if (offer.active && (!offer.applicableProducts || offer.applicableProducts.includes(product._id))) {
-              finalPrice = finalPrice * (1 - offer.discountPercentage / 100);
-            }
-          });
-          return {
-            ...product,
-            finalPrice: Math.round(finalPrice),
-          };
+      const updatedProducts = productList.map((product) => {
+        let finalPrice = product.price;
+        activeOffers.forEach((offer) => {
+          if (
+            offer.active &&
+            (!offer.applicableProducts ||
+              offer.applicableProducts.includes(product._id))
+          ) {
+            finalPrice = finalPrice * (1 - offer.discountPercentage / 100);
+          }
         });
+        return { ...product, finalPrice: Math.round(finalPrice) };
+      });
 
-        setProducts(updatedProducts);
-        setOffers(activeOffers);
-        setCategories(categoryList.map((cat) => cat.name));
-      } catch (error) {
-        console.error("Error loading data:", error);
-      }
-    };
+      setProducts(updatedProducts);
+      setOffers(activeOffers);
+      setCategories(categoryList.map((cat) => cat.name));
+    } catch (error) {
+      console.error("Error loading data:", error);
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   useEffect(() => {
     const cleaned = {};
@@ -128,6 +132,7 @@ const getCartCount = () =>
 
   const value = {
     products,
+    loadingProducts,
     currency,
     offers,
     setOffers,

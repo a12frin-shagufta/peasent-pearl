@@ -1,237 +1,185 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FiInstagram } from 'react-icons/fi';
-import { FaTiktok } from 'react-icons/fa';
-import { FaWhatsapp } from "react-icons/fa";
-import { useContext } from 'react';
-import { ShopContext } from '../context/ShopContext';
+// Hero.jsx
+import React, { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaInstagram } from "react-icons/fa";
+import { SiTiktok } from "react-icons/si";
+import { useNavigate } from "react-router-dom";
 
-
-const Hero = () => {
-  const { offers } = useContext(ShopContext);
-const activeOffer = offers.length > 0 ? offers[0] : null;
-
+export default function Hero() {
   const navigate = useNavigate();
 
-  // Animation variants
-  
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
-  };
+  const stories = [
+    {
+      id: 1,
+      video: "./hand.mp4",
+      duration: 7000,
+      preview: "https://res.cloudinary.com/dbhovfhg6/image/upload/v1752843340/udhk0drcndelbsh0ifoe.jpg",
+    },
+    {
+      id: 2,
+      video: "./bg.mp4",
+      duration: 7000,
+      preview: "./image/bag2.jpg",
+    },
+  ];
 
-  const item = {
-    hidden: { y: 20, opacity: 0 },
-    show: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        ease: "easeOut",
-        duration: 0.5
-      }
-    }
-  };
+  const [idx, setIdx] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [playing, setPlaying] = useState(true);
+  const [videoError, setVideoError] = useState(false);
+  const videoRef = useRef(null);
+  const active = stories[idx];
 
-  const floatingCircle = {
-    animate: {
-      y: [0, -15, 0],
-      opacity: [0.3, 0.5, 0.3],
-      transition: {
-        duration: 4,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
+  useEffect(() => {
+    if (!playing || videoError) return;
+    const t = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 100) {
+          setIdx((i) => (i + 1) % stories.length);
+          return 0;
+        }
+        return p + 100 / (active.duration / 100);
+      });
+    }, 100);
+    return () => clearInterval(t);
+  }, [playing, videoError, active.duration, stories.length]);
+
+  const next = () => { setVideoError(false); setProgress(0); setIdx((i) => (i + 1) % stories.length); };
+  const prev = () => { setVideoError(false); setProgress(0); setIdx((i) => (i - 1 + stories.length) % stories.length); };
+  const pick = (i) => { setVideoError(false); setProgress(0); setIdx(i); setPlaying(true); };
 
   return (
-    <section className="relative w-full h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] overflow-hidden bg-amber-50">
-  {/* 🎉 Offer Coupon Banner */}
-  {activeOffer && (
-    <motion.div
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="absolute top-6 left-1/2 transform -translate-x-1/2 bg-amber-200 text-amber-900 px-4 py-2 rounded-full text-sm font-medium shadow-md z-30"
-    >
-      🎉 Surprise <span className="font-bold">{activeOffer.code}</span>  get {activeOffer.discountPercentage}% off! 💝
-    </motion.div>
-  )}
-
-      
-      {/* Floating decorative elements */}
-      <motion.div
-        variants={floatingCircle}
-        animate="animate"
-        className="absolute top-1/4 left-10 w-16 h-16 bg-amber-200 rounded-full"
+    <section className="relative min-h-screen grid lg:grid-cols-2 gap-8 items-center px-4 sm:px-8 md:px-12 py-12 md:py-16">
+      {/* Background */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background: "radial-gradient(ellipse at top right, rgba(255, 228, 230, 0.4) 0%, rgba(255, 255, 255, 1) 60%)",
+        }}
       />
-     <motion.div
-  variants={floatingCircle}
-  animate="animate"
-  transition={{ delay: 0.5 }}
-  className="absolute bottom-1/3 right-8 w-24 h-24 bg-rose-300 rounded-full"
-/>
 
+      {/* LEFT: Text + CTA */}
+      <div className="text-center lg:text-left relative z-10">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-4xl sm:text-5xl md:text-6xl font-serif font-normal text-gray-900 leading-tight tracking-tight"
+        >
+          Discover{" "}
+          <span className="font-bold text-transparent bg-clip-text bg-[#D87D8F]">
+            Elegance
+          </span>{" "}
+          in Every Detail
+        </motion.h1>
 
-      {/* Social Icons - Fixed on left side */}
-      <div className="hidden md:flex flex-col items-center fixed left-6 bottom-1/2 transform translate-y-1/2 space-y-4 z-20">
-        <motion.a 
-          href="https://instagram.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.1 }}
-          className="text-amber-700 hover:text-amber-800 transition-colors"
+        <motion.p
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="mt-5 text-lg md:text-xl text-gray-700 max-w-xl mx-auto lg:mx-0 font-light leading-relaxed"
         >
-          <FiInstagram className="w-5 h-5" />
-        </motion.a>
-        <motion.a 
-          href="https://tiktok.com" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.1 }}
-          className="text-amber-700 hover:text-amber-800 transition-colors"
-        >
-          <FaTiktok className="w-5 h-5" />
-        </motion.a>
-        <motion.a 
-          href="https://api.whatsapp.com/send/?phone=923171731789&text&type=phone_number&app_absent=0" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          whileHover={{ scale: 1.1 }}
-          className="text-amber-700 hover:text-amber-800 transition-colors"
-        >
-          <FaWhatsapp className="w-5 h-5" />
-        </motion.a>
-        <div className="w-px h-16 bg-amber-300"></div>
-      </div>
-
-      {/* Main content container */}
-      <motion.div 
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="container mx-auto h-full flex flex-col justify-center items-center text-center px-4 relative z-10"
-      >
-        {/* Heading */}
-        <motion.div variants={item}>
-          <motion.h1 
-            className="text-4xl md:text-6xl lg:text-7xl font-serif font-light tracking-wider text-amber-900 mb-4"
-            whileHover={{ scale: 1.02 }}
-          >
-            <motion.span 
-              className="block text-xl md:text-2xl font-sans font-medium text-amber-700 mb-2"
-              whileHover={{ scale: 1.05 }}
-            >
-              Handcrafted with Love
-            </motion.span>
-            Pleasant Pearl
-          </motion.h1>
-        </motion.div>
-
-        {/* Subheading */}
-        <motion.p 
-          variants={item}
-          className="text-lg md:text-xl text-amber-800 max-w-2xl mb-8 leading-relaxed"
-        >
-          Each piece is carefully handmade by skilled artisans, combining traditional techniques with a modern look to create something beautiful and unique.
+          Handcrafted jewelry blending timeless design with modern luxury.
         </motion.p>
 
-        {/* Arabic text */}
-        <motion.p 
-          variants={item}
-          className="text-center text-amber-700 text-sm md:text-base italic font-medium tracking-wide"
+        {/* Buttons */}
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
         >
-          حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ ❤️
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div 
-          variants={item}
-          className="flex flex-col sm:flex-row gap-4 mt-6"
-        >
-          <motion.button 
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 15px 30px -10px rgba(239, 68, 68, 0.4)"
-            }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => navigate('/collection')}
-            className="px-10 py-4 text-white rounded-full transition-all duration-300 shadow-xl bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-sm sm:text-base font-medium"
+          <button
+            onClick={() => navigate("/collection")}
+            className="px-8 py-4 rounded-lg font-medium text-white bg-[#D87D8F] shadow-lg hover:shadow-xl transition-all duration-300 hover:from-rose-800 hover:to-pink-700"
           >
-            Explore Collection
-          </motion.button>
-          
-          <motion.button 
-            whileHover={{ 
-              scale: 1.05,
-              backgroundColor: "rgba(254, 243, 199, 0.5)"
-            }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/about')}
-            className="px-8 py-3 border-2 border-amber-700 text-amber-700 rounded-full transition-all duration-300 hover:bg-amber-50"
+            Shop Collection
+          </button>
+          <button
+            onClick={() => navigate("/about")}
+            className="px-8 py-4 rounded-lg font-medium text-gray-900 bg-white hover:bg-gray-50 border border-gray-200 transition-all duration-300 shadow-sm hover:shadow-md"
           >
             Our Story
-          </motion.button>
+          </button>
         </motion.div>
 
-        {/* Mobile Social Icons */}
-        <div className="md:hidden flex space-x-6 mt-8">
-          <motion.a 
-            href="https://www.instagram.com/pleasant._.pearl?igsh=MXVsMGNseXM0Z2xwZA%3D%3D&utm_source=qr" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.1 }}
-            className="text-amber-700 hover:text-amber-800 transition-colors"
-          >
-            <FiInstagram className="w-6 h-6" />
-          </motion.a>
-          <motion.a 
-            href="https://www.instagram.com/pleasant._.pearl/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.1 }}
-            className="text-amber-700 hover:text-amber-800 transition-colors"
-          >
-            <FaTiktok className="w-6 h-6" />
-          </motion.a>
-          <motion.a 
-            href="https://www.instagram.com/pleasant._.pearl/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.1 }}
-            className="text-amber-700 hover:text-amber-800 transition-colors"
-          >
-            <FaWhatsapp className="w-6 h-6" />
-          </motion.a>
-        </div>
-
-        {/* Animated scroll indicator */}
+        {/* Social Links */}
         <motion.div
-          animate={{
-            y: [0, 15, 0],
-            opacity: [0.6, 1, 0.6]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+          className="mt-8 flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start"
         >
-          <svg className="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-          </svg>
+          <a
+            href="https://instagram.com/pleasant._.pearl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-gray-800 hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100"
+          >
+            <FaInstagram className="text-rose-600" />
+            <span className="text-sm font-medium">@pleasant._.pearl</span>
+          </a>
+          <a
+            href="https://www.tiktok.com/@pleasant._.pearl"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-gray-800 hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100"
+          >
+            <SiTiktok className="text-rose-600" />
+            <span className="text-sm font-medium">@pleasant._.pearl</span>
+          </a>
         </motion.div>
-      </motion.div>
+      </div>
+
+      {/* RIGHT: Story viewer */}
+      <div className="lg:justify-self-end w-full max-w-md mx-auto p-3">
+        <div className="relative rounded-2xl overflow-hidden aspect-[9/16] bg-white/30 border border-white/50 backdrop-blur shadow-xl">
+          {/* Progress bars */}
+          <div className="absolute top-4 left-0 right-0 flex gap-1.5 px-4 z-10">
+            {stories.map((s, i) => (
+              <div key={s.id} className="h-1 bg-white/40 rounded-full flex-1 overflow-hidden">
+                <motion.div
+                  className="h-full bg-white rounded-full"
+                  animate={{ width: i === idx ? `${progress}%` : i < idx ? "100%" : "0%" }}
+                  transition={{ duration: 0.1 }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Video / Fallback */}
+          <div className="relative w-full h-full flex items-center justify-center">
+            {videoError ? (
+              <img src={active.preview} alt="" className="w-full h-full object-cover opacity-70" />
+            ) : (
+              <video
+                key={active.id}
+                ref={videoRef}
+                src={active.video}
+                autoPlay={playing}
+                muted
+                playsInline
+                onEnded={next}
+                onError={() => setVideoError(true)}
+                className="w-full h-full object-cover"
+              />
+            )}
+            <button onClick={prev} className="absolute left-0 top-0 h-full w-1/2 cursor-pointer" aria-label="Previous story" />
+            <button onClick={next} className="absolute right-0 top-0 h-full w-1/2 cursor-pointer" aria-label="Next story" />
+          </div>
+
+          {/* Thumbnails */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
+            {stories.map((s, i) => (
+              <button
+                key={s.id}
+                onClick={() => pick(i)}
+                className={`w-10 h-10 rounded-full overflow-hidden border-2 transition-all ${i === idx ? "border-white shadow-md" : "border-white/40"}`}
+                aria-label={`View story ${i + 1}`}
+              >
+                <img src={s.preview} alt="" className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
-};
-
-export default Hero;
+}
