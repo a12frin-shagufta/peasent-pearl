@@ -10,7 +10,7 @@ const Testimonial = () => {
 
   const fetchTestimonials = async () => {
     try {
-      const res = await axios.get(`${backendUrl}/api/testimonial`, {
+      const res = await axios.get(`${backendUrl}/api/testimonials`, {
         params: { page: 1, limit: 12, featuredFirst: true },
       });
       setTestimonials(res.data.data || []);
