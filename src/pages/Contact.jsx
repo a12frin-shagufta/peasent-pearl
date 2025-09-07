@@ -221,7 +221,7 @@ const Contact = () => {
                 <p className="text-amber-700">
                   Mon-Sat: 12AM - 10PM
                   <br />
-                  Sunday: Closed
+                  Sunday: Closedd
                 </p>
               </div>
             </div>
