@@ -157,7 +157,7 @@ const Collection = () => {
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="font-semibold text-gray-900 text-lg flex items-center gap-2">
                       <RiFilterLine className="text-pink-600" />
-                      Refine Collection
+                      Refine Collection 
                     </h3>
                     {activeFilters > 0 && (
                       <button
@@ -169,7 +169,7 @@ const Collection = () => {
                     )}
                   </div>
 
-                  {/* Categories */}
+                  {/* Categories  */}
                   {/* Categories */}
 <div className="mb-8">
   <h4 className="text-sm font-semibold text-gray-800 mb-4 uppercase tracking-wider flex items-center gap-2">
