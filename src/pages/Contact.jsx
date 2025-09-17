@@ -202,7 +202,7 @@ const Contact = () => {
               <div>
                 <h3 className="font-medium text-amber-900">Address</h3>
                 <p className="text-amber-700">
-                  Faisalabad Pakistan
+                 Khalidabad Faisalabad Pakistan
                   <br />
                 </p>
               </div>
