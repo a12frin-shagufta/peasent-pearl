@@ -9,7 +9,7 @@ const Testimonial = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0); // 0: none, 1: right, -1: left
+  const [direction, setDirection] = useState(0);
 
   const fetchTestimonials = async () => {
     try {
@@ -86,10 +86,8 @@ const Testimonial = () => {
     );
   }
 
-  const single = testimonials.length === 1;
-
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className="py-16  overflow-hidden">
       <div className="max-w-6xl mx-auto px-4">
         <motion.h2 
           initial={{ opacity: 0, y: 10 }}
@@ -103,30 +101,36 @@ const Testimonial = () => {
           </span>
         </motion.h2>
 
-        {/* Mobile/Tablet Carousel */}
+        {/* Mobile/Tablet Carousel - FIXED */}
         <div className="md:hidden relative">
-          <div className="overflow-hidden">
-            <AnimatePresence initial={false} custom={direction}>
+          <div className="overflow-hidden h-[400px] flex items-center">
+            <AnimatePresence initial={false} custom={direction} mode="wait">
               <motion.div
                 key={currentIndex}
                 custom={direction}
                 initial={{ 
                   opacity: 0, 
-                  x: direction > 0 ? 100 : -100 
+                  x: direction > 0 ? 300 : -300 
                 }}
                 animate={{ 
                   opacity: 1, 
                   x: 0,
-                  transition: { duration: 0.5 }
+                  transition: { 
+                    duration: 0.4,
+                    ease: "easeOut"
+                  }
                 }}
                 exit={{ 
                   opacity: 0, 
-                  x: direction > 0 ? -100 : 100,
-                  transition: { duration: 0.3 }
+                  x: direction > 0 ? -300 : 300,
+                  transition: { 
+                    duration: 0.3,
+                    ease: "easeIn"
+                  }
                 }}
-                className="w-full"
+                className="w-full absolute px-2"
               >
-                <div className="bg-white p-6 rounded-xl border border-amber-100 shadow-sm mx-auto w-full max-w-md">
+                <div className="bg-white p-6 rounded-xl border border-amber-100 shadow-sm mx-auto w-full">
                   <TestimonialCard testimonial={testimonials[currentIndex]} />
                 </div>
               </motion.div>
@@ -137,31 +141,31 @@ const Testimonial = () => {
             <>
               <button 
                 onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white rounded-full p-2 shadow-md border border-amber-100 hover:bg-amber-50 transition-colors"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-md border border-amber-100 hover:bg-amber-50 transition-colors z-10"
                 aria-label="Previous testimonial"
               >
-                <FaChevronLeft className="text-amber-700" />
+                <FaChevronLeft className="text-amber-700 text-sm" />
               </button>
               
               <button 
                 onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white rounded-full p-2 shadow-md border border-amber-100 hover:bg-amber-50 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-md border border-amber-100 hover:bg-amber-50 transition-colors z-10"
                 aria-label="Next testimonial"
               >
-                <FaChevronRight className="text-amber-700" />
+                <FaChevronRight className="text-amber-700 text-sm" />
               </button>
             </>
           )}
           
           {/* Dots indicator */}
           {testimonials.length > 1 && (
-            <div className="flex justify-center mt-6 space-x-2">
+            <div className="flex justify-center mt-6 space-x-3">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentIndex ? 'bg-amber-600 scale-125' : 'bg-amber-200'
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    index === currentIndex ? 'bg-amber-600' : 'bg-amber-200'
                   }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />

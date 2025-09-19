@@ -208,9 +208,9 @@ const singularize = useCallback((s) => {
           className="mb-6 md:mb-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
         >
           <div className="text-left">
-            <h1 className="text-3xl md:text-4xl font-serif text-gray-900 mb-2">
-              Our <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">Collection</span>
-            </h1>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-amber-900 mb-4">
+          All <span className="bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">Collection</span>
+        </h2>
             <p className="text-gray-600 max-w-xl text-sm md:text-base">
               Discover timeless pieces crafted with precision and passion
             </p>
@@ -378,18 +378,7 @@ const singularize = useCallback((s) => {
                   )}
 
                   {/* Side banner / promo */}
-                  <div className="mt-6 border-t pt-6 border-gray-100">
-                    <div className="bg-gradient-to-r from-amber-50 to-amber-100 p-4 rounded-lg text-center border border-amber-200">
-                      <h4 className="font-semibold text-amber-800 mb-2">Seasonal Sale</h4>
-                      <p className="text-sm text-amber-700 mb-3">Up to 40% off on selected categories</p>
-                      <button 
-                        onClick={() => { toggleCategory("sale"); setShowFilter(true); }} 
-                        className="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-amber-700 transition-colors"
-                      >
-                        Shop Sale
-                      </button>
-                    </div>
-                  </div>
+                  
                 </div>
               </motion.aside>
             )}

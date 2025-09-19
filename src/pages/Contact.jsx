@@ -1,233 +1,126 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
-import {
-  FaWhatsapp,
-  FaEnvelope,
-  FaInstagram,
-  FaTiktok,
-  FaMapMarkerAlt,
-  FaPhone,
-} from "react-icons/fa";
+import { FaEnvelope, FaInstagram, FaHeart, FaTiktok } from "react-icons/fa";
 
 const Contact = () => {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const BUSINESS_EMAIL = "Pleasantpearljewelry@gmail.com";
+  const INSTAGRAM_URL = "https://www.instagram.com/pleasant._.pearl/";
+  const TIKTOK_URL = "https://www.tiktok.com/@pleasant.pearl?_t=ZS-8xaR5rVOsKG&_r=1";
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-    try {
-      await axios.post(`${backendUrl}/api/contact/submit`, form);
-      console.log("Message sent successfully!")
-      setForm({ name: "", email: "", message: "" });
-    } catch (err) {
-      console.log(err)
-    }
-  };
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen  py-12 px-4 sm:px-6 lg:px-8"
+      transition={{ duration: 0.7 }}
+      className="min-h-screen flex flex-col items-center justify-center px-4 py-12"
     >
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-serif font-light text-amber-900 mb-3">
-            Get In Touch
-          </h1>
-          <div className="w-20 h-1 bg-amber-400 mx-auto mb-4"></div>
-          <p className="text-amber-700 max-w-2xl mx-auto">
-            We'd love to hear from you! Reach out through any of these channels.
-          </p>
-        </div>
+      {/* Header Section */}
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="text-center mb-12"
+      >
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-light text-amber-900 mb-4">
+          Contact <span className="bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">Us 📞</span>
+        </h2>
+      </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Contact Methods */}
-          <div className="space-y-6">
-            {/* WhatsApp */}
+      {/* Contact Icons Section */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-8 border border-amber-100"
+      >
+        <h2 className="text-2xl font-serif text-gray-700 mb-8 text-center flex items-center justify-center gap-2">
+          <FaHeart className="text-amber-300" /> Connect With Us
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Email Card */}
+          <motion.div
+            whileHover={{ scale: 1.03, y: -5 }}
+            className="flex flex-col items-center text-center p-6 bg-amber-50 rounded-xl border border-amber-100 hover:bg-amber-100 transition-all duration-300"
+          >
+            <div className="p-4 bg-amber-700 rounded-full text-white mb-4">
+              <FaEnvelope className="text-2xl" />
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-2">Email Us</h3>
+            <p className="text-gray-600 font-light mb-4">Send us a message directly</p>
             <motion.a
-              whileHover={{ x: 5 }}
-              href="https://api.whatsapp.com/send?phone=%2B923171731789&utm_campaign=wa_phone_number_xma&source_surface=30"
+              whileHover={{ scale: 1.05 }}
+              href={`mailto:${BUSINESS_EMAIL}`}
+              className="text-gray-700 font-medium hover:text-amber-700 transition break-all text-sm"
+            >
+              {BUSINESS_EMAIL}
+            </motion.a>
+          </motion.div>
+
+          {/* Instagram Card */}
+          <motion.div
+            whileHover={{ scale: 1.03, y: -5 }}
+            className="flex flex-col items-center text-center p-6 bg-amber-50 rounded-xl border border-amber-100 hover:bg-amber-100 transition-all duration-300"
+          >
+            <div className="p-4 bg-amber-700 rounded-full text-white mb-4">
+              <FaInstagram className="text-2xl" />
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-2">Follow Us</h3>
+            <p className="text-gray-600 mb-4 font-light">See our latest collections</p>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100"
+              className="text-gray-700 font-medium hover:text-amber-700 transition"
             >
-              <div className="bg-green-100 p-3 rounded-full mr-4">
-                <FaWhatsapp className="text-green-600 text-2xl" />
-              </div>
-
-              <div>
-                <h3 className="font-medium text-amber-900">WhatsApp</h3>
-                <p className="text-amber-600 text-sm">+92 317 1731789</p>
-              </div>
+              @pleasant._.pearl
             </motion.a>
+          </motion.div>
 
-            {/* Email */}
+          {/* TikTok Card */}
+          <motion.div
+            whileHover={{ scale: 1.03, y: -5 }}
+            className="flex flex-col items-center text-center p-6 bg-amber-50 rounded-xl border border-amber-100 hover:bg-amber-100 transition-all duration-300"
+          >
+            <div className="p-4 bg-amber-700 rounded-full text-white mb-4">
+              <FaTiktok className="text-2xl" />
+            </div>
+            <h3 className="font-semibold text-gray-800 mb-2">Follow Us</h3>
+            <p className="text-gray-600 mb-4 font-light">See our latest videos</p>
             <motion.a
-              whileHover={{ x: 5 }}
-              href="mailto:your@email.com"
-              className="flex items-center bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100"
-            >
-              <div className="bg-amber-100 p-3 rounded-full mr-4">
-                <FaEnvelope className="text-amber-600 text-2xl" />
-              </div>
-              <div>
-                <h3 className="font-medium text-amber-900">Email</h3>
-                <p className="text-amber-600 text-sm">
-                  Pleasantpearljewelry@gmail.com
-                </p>
-              </div>
-            </motion.a>
-
-            {/* Instagram */}
-            <motion.a
-              whileHover={{ x: 5 }}
-              href="https://www.instagram.com/pleasant._.pearl/"
+              whileHover={{ scale: 1.05 }}
+              href={TIKTOK_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100"
+              className="text-gray-700 font-medium hover:text-amber-700 transition"
             >
-              <div className="bg-pink-100 p-3 rounded-full mr-4">
-                <FaInstagram className="text-pink-600 text-2xl" />
-              </div>
-              <div>
-                <h3 className="font-medium text-amber-900">Instagram</h3>
-                <p className="text-amber-600 text-sm">pleasant._.pearl</p>
-              </div>
+              @pleasant.pearl
             </motion.a>
-
-            {/* TikTok */}
-            <motion.a
-              whileHover={{ x: 5 }}
-              href="https://www.tiktok.com/@pleasant.pearl?_t=ZS-8xaR5rVOsKG&_r=1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100"
-            >
-              <div className="bg-black p-3 rounded-full mr-4">
-                <FaTiktok className="text-white text-2xl" />
-              </div>
-              <div>
-                <h3 className="font-medium text-amber-900">TikTok</h3>
-                <p className="text-amber-600 text-sm">@pleasant.pearl</p>
-              </div>
-            </motion.a>
-          </div>
-
-          {/* Contact Form */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-amber-100">
-            <h2 className="text-xl font-serif font-light text-amber-900 mb-6">
-              Send us a message
-            </h2>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-amber-700 mb-1"
-                >
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Enter your name"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-amber-700 mb-1"
-                >
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-amber-700 mb-1"
-                >
-                  Message
-                </label>
-                <textarea
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  rows="4"
-                  placeholder="Your message..."
-                  required
-                ></textarea>
-              </div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                className="w-full   bg-gradient-to-r from-amber-700 to-orange-700 text-white py-3 rounded-lg font-medium hover:bg-amber-700 transition-colors"
-              >
-                Send Message
-              </motion.button>
-            </form>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Business Info */}
-        <div className="mt-12 bg-white p-6 rounded-xl shadow-sm border border-amber-100">
-          <h2 className="text-xl font-serif font-light text-amber-900 mb-6">
-            Our Business Information
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-start">
-              <FaMapMarkerAlt className="text-amber-600 mt-1 mr-3" />
-              <div>
-                <h3 className="font-medium text-amber-900">Address</h3>
-                <p className="text-amber-700">
-                 Khalidabad Faisalabad Pakistan
-                  <br />
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <FaPhone className="text-amber-600 mt-1 mr-3" />
-              <div>
-                <h3 className="font-medium text-amber-900">Phone</h3>
-                <p className="text-amber-700">+92 317 1731789</p>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <FaEnvelope className="text-amber-600 mt-1 mr-3" />
-              <div>
-                <h3 className="font-medium text-amber-900">Business Hours</h3>
-                <p className="text-amber-700">
-                  Mon-Sat: 12AM - 10PM
-                  <br />
-                  Sunday: Closedd
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        {/* Additional Message */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+          className="mt-8 text-center text-gray-600 p-4 bg-amber-50 rounded-lg border border-amber-100"
+        >
+          <p className="font-light">We'd love to hear from you! Reach out through any of these channels.</p>
+        </motion.div>
+      </motion.div>
+
+      {/* Footer Message */}
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1.2 }}
+        className="mt-12 text-center text-gray-500 max-w-2xl"
+      >
+        <p className="mb-2">We typically respond to all inquiries within 24 hours</p>
+        <p>© {new Date().getFullYear()} Pleasant Pearl. All rights reserved.</p>
+      </motion.div>
     </motion.div>
   );
 };

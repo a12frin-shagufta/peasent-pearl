@@ -40,10 +40,10 @@ const About = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-8  relative overflow-hidden ">
+    <section className="py-12 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Decorative background elements */}
-      <div className="absolute -top-20 -right-20 w-80 h-80   rounded-full blur-3xl opacity-50"></div>
-      <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-gradient-to-r rounded-full blur-3xl opacity-40"></div>
+      <div className="absolute -top-10 -right-10 md:-top-20 md:-right-20 w-60 h-60 md:w-80 md:h-80 bg-gradient-to-br from-amber-200/30 to-orange-300/20 rounded-full blur-2xl md:blur-3xl opacity-50"></div>
+      <div className="absolute -bottom-10 -left-10 md:-bottom-20 md:-left-20 w-60 h-60 md:w-80 md:h-80 bg-gradient-to-tr from-amber-100/30 to-orange-200/20 rounded-full blur-2xl md:blur-3xl opacity-40"></div>
       
       <div className="max-w-4xl mx-auto relative">
         <motion.div
@@ -51,7 +51,7 @@ const About = () => {
           whileInView="show"
           viewport={{ once: true, margin: "-50px" }}
           variants={container}
-          className="rounded-3xl bg-[#fffdf5] backdrop-blur-sm shadow-xl p-8 md:p-12 text-center relative border border-white/20 overflow-hidden"
+          className="rounded-2xl md:rounded-3xl bg-[#fffdf5] backdrop-blur-sm shadow-lg md:shadow-xl p-6 md:p-10 lg:p-12 text-center relative border border-white/20 overflow-hidden"
         >
           {/* Subtle background pattern */}
           <div className="absolute inset-0 opacity-[0.03] -z-10">
@@ -61,16 +61,16 @@ const About = () => {
           {/* Logo on top */}
           <motion.div 
             variants={item} 
-            className="mb-8 flex justify-center relative"
+            className="mb-6 md:mb-8 flex justify-center relative"
           >
             <div className="relative">
               <img
                 src="./image/logo1.png"
                 alt="Pleasant Pearl Logo"
-                className="h-24 md:h-28 w-auto object-contain filter drop-shadow-md"
+                className="h-20 md:h-24 lg:h-28 w-auto object-contain filter drop-shadow-md"
               />
               <motion.div 
-                className="absolute -inset-4 bg-gradient-to-r from-amber-400/30 to-amber-400/20 rounded-full blur-md -z-10"
+                className="absolute -inset-3 md:-inset-4 bg-gradient-to-r from-amber-400/30 to-amber-400/20 rounded-full blur-md -z-10"
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -80,9 +80,9 @@ const About = () => {
           </motion.div>
 
           {/* Subheading */}
-          <motion.div variants={item} className="mb-4">
-            <span className="text-xs font-semibold uppercase tracking-wider text-white bg-gradient-to-r from-amber-300 to-orange-700 px-4 py-2 rounded-full border border-pink-100 shadow-sm inline-flex items-center">
-              <span className="w-2 h-2 bg-gray-200 rounded-full mr-2 animate-pulse"></span>
+          <motion.div variants={item} className="mb-3 md:mb-4">
+            <span className="text-xs font-semibold uppercase tracking-wider text-white bg-gradient-to-r from-amber-300 to-orange-700 px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-amber-100 shadow-sm inline-flex items-center">
+              <span className="w-1.5 h-1.5 bg-white/90 rounded-full mr-2 animate-pulse"></span>
               Our Story
             </span>
           </motion.div>
@@ -90,7 +90,7 @@ const About = () => {
           {/* Heading */}
           <motion.h2
             variants={item}
-            className="text-3xl md:text-4xl font-serif font-light text-amber-900 mb-6"
+            className="text-2xl sm:text-3xl md:text-4xl font-serif font-light text-amber-900 mb-4 md:mb-6"
           >
             Crafting <span className="text-amber-900 bg-clip-text">Elegance</span>, Since 2023
           </motion.h2>
@@ -98,7 +98,7 @@ const About = () => {
           {/* Short description */}
           <motion.p
             variants={item}
-            className="text-gray-700 max-w-2xl mx-auto mb-8 text-lg leading-relaxed font-light"
+            className="text-gray-700 max-w-2xl mx-auto mb-6 md:mb-8 text-base md:text-lg leading-relaxed font-light"
           >
             At <span className="font-medium text-amber-700">Pleasant Pearl</span>, 
             we blend traditional craftsmanship with modern design to create exquisite jewelry 
@@ -108,16 +108,16 @@ const About = () => {
           {/* Buttons */}
           <motion.div
             variants={item}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-10"
+            className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center mb-8 md:mb-10"
           >
-            <Link to={"/collection"}>
+            <Link to={"/collection"} className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ 
                   scale: 1.05,
-                  boxShadow: "0 10px 25px rgba(236, 72, 153, 0.2)"
+                  boxShadow: "0 10px 25px rgba(245, 158, 11, 0.3)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-3.5 bg-gradient-to-r from-amber-700 to-orange-700 text-white rounded-full font-semibold hover:from-pink-700 hover:to-rose-700 transition-all duration-300 shadow-lg flex items-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 md:px-8 md:py-3.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-full font-semibold hover:from-amber-700 hover:to-orange-700 transition-all duration-300 shadow-lg flex items-center justify-center gap-2"
               >
                 Explore Collection
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,14 +125,14 @@ const About = () => {
                 </svg>
               </motion.button>
             </Link>
-            <Link to={"/contact"}>
+            <Link to={"/contact"} className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ 
                   scale: 1.05,
                   backgroundColor: "rgba(255, 255, 255, 0.95)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-3.5 border border-gray-200 text-gray-700 rounded-full font-medium hover:border-pink-200 hover:bg-pink-50 transition-all duration-300 shadow-sm flex items-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 md:px-8 md:py-3.5 border border-gray-200 text-gray-700 rounded-full font-medium hover:border-amber-200 hover:bg-amber-50 transition-all duration-300 shadow-sm flex items-center justify-center gap-2"
               >
                 Contact Us
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,32 +145,32 @@ const About = () => {
           {/* Stats divider */}
           <motion.div 
             variants={item}
-            className="relative mb-8"
+            className="relative mb-6 md:mb-8"
           >
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
               <div className="w-full border-t border-gray-100"></div>
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-white px-3 text-sm text-gray-500">Craftsmanship</span>
+              <span className="bg-[#fffdf5] px-3 text-xs md:text-sm text-gray-500">Craftsmanship</span>
             </div>
           </motion.div>
 
           {/* Mini Stats */}
           <motion.div
             variants={container}
-            className="grid grid-cols-3 gap-6 md:gap-8 mt-2"
+            className="grid grid-cols-3 gap-4 md:gap-6 lg:gap-8 mt-2"
           >
             <motion.div variants={statItem} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">100%</div>
-              <div className="text-sm text-gray-600 font-medium">Handcrafted</div>
+              <div className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">100%</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Handcrafted</div>
             </motion.div>
             <motion.div variants={statItem} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">500+</div>
-              <div className="text-sm text-gray-600 font-medium">Happy Clients</div>
+              <div className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">500+</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Happy Clients</div>
             </motion.div>
             <motion.div variants={statItem} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">Ethical</div>
-              <div className="text-sm text-gray-600 font-medium">Sourcing</div>
+              <div className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">Ethical</div>
+              <div className="text-xs md:text-sm text-gray-600 font-medium">Sourcing</div>
             </motion.div>
           </motion.div>
         </motion.div>

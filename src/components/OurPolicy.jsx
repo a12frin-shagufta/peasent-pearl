@@ -1,57 +1,44 @@
+// OurPolicy.jsx (compact version)
 import React from 'react';
 import { FaHandHoldingUsd, FaCreditCard, FaTruck, FaCamera, FaMagic } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
-// Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.3
-    }
-  }
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.6,
-      ease: [0.16, 1, 0.3, 1]
-    }
-  }
+  hidden: { y: 15, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
 };
 
 const OurPolicy = () => {
   const policies = [
     {
-      icon: <FaHandHoldingUsd className="text-amber-600 text-2xl" />,
-      title: "Cash on Delivery (COD)",
-      description: "We accept partial advance payment for COD orders. 50% payment is required online, and the remaining can be paid at delivery."
+      icon: <FaHandHoldingUsd className="text-amber-600 text-xl" />,
+      title: "Cash on Delivery",
+      description: "50% advance required for COD, rest on delivery."
     },
     {
-      icon: <FaCreditCard className="text-amber-600 text-2xl" />,
+      icon: <FaCreditCard className="text-amber-600 text-xl" />,
       title: "Online Payments",
-      description: "Full payment via online methods is also available and preferred for faster processing."
+      description: "Pay fully online for faster processing."
     },
     {
-      icon: <FaTruck className="text-amber-600 text-2xl" />,
-      title: "Delivery Time",
-      description: "Orders are delivered within 11–15 working days across Pakistan."
+      icon: <FaTruck className="text-amber-600 text-xl" />,
+      title: "Delivery",
+      description: "Within 11–15 working days across Pakistan."
     },
     {
-      icon: <FaCamera className="text-amber-600 text-2xl" />,
+      icon: <FaCamera className="text-amber-600 text-xl" />,
       title: "Photo Proof",
-      description: "Before dispatch, we'll share actual product photos for your confirmation."
+      description: "We share real product photos before dispatch."
     },
     {
-      icon: <FaMagic className="text-amber-600 text-2xl" />,
+      icon: <FaMagic className="text-amber-600 text-xl" />,
       title: "Customization",
-      description: "Custom design requests are welcome! Share your ideas while ordering."
+      description: "Custom designs are welcome!"
     }
   ];
 
@@ -59,40 +46,32 @@ const OurPolicy = () => {
     <motion.section
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-50px" }}
       variants={containerVariants}
-      className="bg-whites py-16 px-4 sm:px-6 lg:px-8"
+      className=" py-8 px-4 sm:px-6 lg:px-8"
     >
-      <motion.div className="max-w-4xl mx-auto">
-        <motion.div 
-          variants={itemVariants}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-serif font-light text-amber-900 mb-3">
+      <motion.div className="max-w-5xl mx-auto">
+        <motion.div variants={itemVariants} className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-serif text-amber-900">
             Our Policies
           </h2>
-          <div className="w-20 h-1 bg-amber-400 mx-auto mb-4"></div>
-          <p className="text-sm md:text-base text-amber-700 max-w-2xl mx-auto">
-            Transparency, trust, and handcrafted elegance – here's everything you need to know
+          <p className="text-sm md:text-base text-amber-700 mt-2">
+            Transparency, trust & handcrafted elegance
           </p>
         </motion.div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
           {policies.map((policy, index) => (
             <motion.div
               key={index}
               variants={itemVariants}
-              className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-amber-100"
+              className="bg-white p-4 rounded-lg shadow-sm border border-amber-100 flex items-start"
             >
-              <div className="flex items-center mb-4">
-                <div className="p-3 bg-amber-50 rounded-full mr-4">
-                  {policy.icon}
-                </div>
-                <h3 className="text-lg font-medium text-amber-900">{policy.title}</h3>
+              <div className="p-2 bg-amber-50 rounded-full mr-3">{policy.icon}</div>
+              <div>
+                <h3 className="text-base font-medium text-amber-900">{policy.title}</h3>
+                <p className="text-amber-700 text-sm mt-1">{policy.description}</p>
               </div>
-              <p className="text-amber-700 text-sm leading-relaxed pl-16">
-                {policy.description}
-              </p>
             </motion.div>
           ))}
         </div>

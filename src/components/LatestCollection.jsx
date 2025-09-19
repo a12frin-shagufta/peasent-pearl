@@ -54,8 +54,8 @@ const LatestCollection = () => {
       className="py-12 md:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
     >
       <motion.div variants={fadeInUp} className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-amber-900 mb-2">
-          New Arrivals
+         <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-light text-amber-900 mb-4">
+          New <span className="bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">Arrival ✨</span>
         </h2>
         <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
           Freshly added — our latest handcrafted pieces. Updated automatically.

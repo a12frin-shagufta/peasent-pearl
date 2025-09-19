@@ -314,8 +314,9 @@ navigate(`/thank-you?${q}`);
       <div className="mt-4 p-3 bg-amber-50 rounded-md">
         {form.paymentMethod === "cod" ? (
           <p className="text-sm text-amber-800 text-center">
-            COD selected — pay <strong>{currency} {advanceAmount}</strong> now (50% advance)
-          </p>
+  For COD you need to pay <strong>50% advance</strong> now to confirm your order.
+</p>
+
         ) : (
           <p className="text-sm text-amber-800 text-center">
             Please transfer: {currency} {advanceAmount} and upload proof for verification

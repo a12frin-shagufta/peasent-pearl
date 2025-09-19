@@ -17,6 +17,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import ScrollToTop from './components/ScrollToTop'; // 👈 Import
 import Testimonial from './pages/Testimonial';
 import BestSeller from './components/BestSeller';
+import OurPolicy from './components/OurPolicy';
 const App = () => {
   return (
     <div className="min-h-screen flex flex-col">
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/testimonials" element={<Testimonial />} />
           <Route path="/bestseller" element={<BestSeller />} />
+          <Route path="/our-policy" element={<OurPolicy />} />
         </Routes>
       </main>
 
