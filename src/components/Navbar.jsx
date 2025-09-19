@@ -70,7 +70,7 @@ const Navbar = () => {
             >
               <CiShoppingCart className="h-6 w-6 text-gray-700 group-hover:text-[#D87D8F]" />
               {getCartCount() > 0 && (
-                <span className="absolute -top-0 -right-0 w-5 h-5 bg-black text-white text-xs font-bold rounded-full flex items-center justify-center shadow-sm z-10">
+                <span className="absolute -top-0 -right-0 w-5 h-5 bg-amber-700 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-sm z-10">
                   {getCartCount()}
                 </span>
               )}
