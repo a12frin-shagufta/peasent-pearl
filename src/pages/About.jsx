@@ -95,15 +95,18 @@ const About = () => {
             Crafting <span className="text-amber-900 bg-clip-text">Elegance</span>, Since 2023
           </motion.h2>
 
-          {/* Short description */}
-          <motion.p
+          {/* Owner's personal message */}
+          <motion.div
             variants={item}
             className="text-gray-700 max-w-2xl mx-auto mb-6 md:mb-8 text-base md:text-lg leading-relaxed font-light"
           >
-            At <span className="font-medium text-amber-700">Pleasant Pearl</span>, 
-            we blend traditional craftsmanship with modern design to create exquisite jewelry 
-            that tells your unique story — timeless, elegant, and meticulously crafted with passion.
-          </motion.p>
+            <p className="mb-4 italic text-amber-800/90">
+              "Hi, I'm Ramsha, the owner of Pleasant Pearl. I started this small business in November 2023 with the dream of becoming independent and sharing unique handmade jewelry you won't find anywhere else."
+            </p>
+            <p>
+              Every piece is made with love and high-quality materials. I'm so grateful to have you as part of my journey ❤️
+            </p>
+          </motion.div>
 
           {/* Buttons */}
           <motion.div

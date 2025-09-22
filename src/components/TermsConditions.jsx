@@ -7,7 +7,7 @@ const TermsConditions = () => {
 
       <ul className="list-disc pl-5 space-y-4">
         <li>All products are handmade; slight variations in design or shade may occur.</li>
-        <li>Once confirmed, orders cannot be canceled or modified after 12 hours.</li>
+        <li>Once confirmed, orders cannot be canceled or modified after 24 hours.</li>
         <li>For Cash on Delivery, **50% advance payment is mandatory**. Remaining 50% is paid on delivery.</li>
         <li>Estimated delivery time is **11–15 working days** within Pakistan.</li>
         <li>We reserve the right to cancel any suspicious or incomplete orders.</li>
