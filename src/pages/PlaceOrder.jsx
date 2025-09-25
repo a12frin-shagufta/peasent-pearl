@@ -236,7 +236,7 @@ const PlaceOrder = () => {
   const canSubmit = cartData.length > 0 && (!proofRequired || (file && form.transactionRef && form.senderLast4 && form.senderLast4.trim().length === 4));
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-2 py-5">
       {/* Missing Info Modal */}
       {missingModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -269,7 +269,7 @@ const PlaceOrder = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }} 
-        className="bg-white p-6 rounded-lg shadow-lg"
+        className="bg-white p-2 rounded-lg shadow-lg"
       >
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Complete Your Order</h2>
 
