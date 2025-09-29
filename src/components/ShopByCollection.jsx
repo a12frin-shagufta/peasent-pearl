@@ -67,7 +67,7 @@ const ShopByCollection = ({ className = "" }) => {
           animate={isInView ? "visible" : "hidden"}
         >
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif text-amber-900 mb-4">
-          Shop By <span className="bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">Collection ✨</span>
+          Shop By <span className="bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">Category ✨</span>
         </h2>
          
         </motion.div>
