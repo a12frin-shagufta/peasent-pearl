@@ -25,6 +25,11 @@ const Collection = () => {
   const [priceRange, setPriceRange] = useState([0, 1000000]); // keep large default
   const [activeFilters, setActiveFilters] = useState(0);
   const location = useLocation();
+  const pickFirstImage = (p) =>
+  (p.variants?.flatMap(v => v.images || []).find(Boolean)) || p.image || null;
+
+const pickFirstVideo = (p) =>
+  (p.variants?.flatMap(v => v.videos || []).find(Boolean)) || null;
 
   // New UI state
   const [viewMode, setViewMode] = useState("grid"); // 'grid' | 'list' | 'full'
@@ -335,15 +340,21 @@ const Collection = () => {
                     {filterProducts.map((item) => (
                       <motion.div key={item._id} variants={fadeIn} className={`bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 ${viewMode === "full" ? "col-span-1 md:col-span-1 lg:col-span-1" : ""}`}>
                         <ProductItem
-                          id={item._id}
-                          image={item.variants?.[0]?.images?.[0] || item.image?.[0] || "/fallback.jpg"}
-                          name={item.name}
-                          price={item.price}
-                          finalPrice={item.finalPrice}
-                          stock={item.stock}
-                          badgeType={item.createdAt && Date.now() - new Date(item.createdAt) < 30 * 24 * 60 * 60 * 1000 ? "new" : ""}
-                          viewMode={viewMode}
-                        />
+  id={item._id}
+  image={pickFirstImage(item)}
+  video={pickFirstVideo(item)}
+  name={item.name}
+  price={item.price}
+  finalPrice={item.finalPrice}
+  stock={item.stock}
+  badgeType={
+    item.createdAt && Date.now() - new Date(item.createdAt) < 30 * 24 * 60 * 60 * 1000
+      ? "new"
+      : ""
+  }
+  viewMode={viewMode}
+/>
+
                       </motion.div>
                     ))}
                   </div>

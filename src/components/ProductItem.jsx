@@ -1,83 +1,69 @@
-import React, { useContext } from "react";
+// src/components/ProductItem.jsx
+import React, { useContext, useRef, useEffect } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const ProductItem = ({ id, image, name, price, finalPrice, stock, badgeType }) => {
-  const { currency, addToCart } = useContext(ShopContext);
+const PLACEHOLDER =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'>
+       <defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>
+         <stop offset='0%' stop-color='#f3f4f6'/>
+         <stop offset='100%' stop-color='#e5e7eb'/>
+       </linearGradient></defs>
+       <rect width='100%' height='100%' fill='url(#g)'/>
+       <text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle'
+         fill='#9ca3af' font-family='Arial' font-size='22'>Preview</text>
+     </svg>`
+  );
 
-  // Handle quick add to cart
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(id);
-  };
+// resolve URL from string | array | object
+const resolveUrl = (val) => {
+  if (!val) return null;
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) {
+    for (const it of val) {
+      const u = resolveUrl(it);
+      if (u) return u;
+    }
+    return null;
+  }
+  if (typeof val === "object") {
+    return (
+      resolveUrl(val.secure_url) ||
+      resolveUrl(val.url) ||
+      resolveUrl(val.src) ||
+      resolveUrl(val.path) ||
+      resolveUrl(val.image) ||
+      null
+    );
+  }
+  return null;
+};
 
-  // Calculate discount (if any)
+const ProductItem = ({ id, image, video, name, price, finalPrice }) => {
+  const { currency } = useContext(ShopContext);
+  const videoRef = useRef(null);
+
+  const videoUrl = resolveUrl(video);
+  const imageUrl = resolveUrl(image);
+
+  const hasVideo = !!videoUrl;
+  const hasImage = !!imageUrl;
+
+  // autoplay only if it's video-only
+  useEffect(() => {
+    if (videoRef.current && hasVideo && !hasImage) {
+      const play = videoRef.current.play();
+      if (play?.catch) play.catch(() => {});
+    }
+  }, [hasVideo, hasImage]);
+
   const hasDiscount = Number(finalPrice) < Number(price);
   const discount = hasDiscount
     ? Math.round(((Number(price) - Number(finalPrice)) / Number(price)) * 100)
     : 0;
-
-  // Decide which badge to show
-  const renderBadge = () => {
-    if (badgeType === "new") {
-      return (
-        <motion.span 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="absolute top-2 left-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white text-xs px-2.5 py-1 rounded-full shadow-lg z-10 font-semibold flex items-center"
-        >
-          <span className="relative flex h-2 w-2 mr-1">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-          </span>
-          New
-        </motion.span>
-      );
-    }
-
-    if (badgeType === "trend") {
-      return (
-        <motion.span 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="absolute top-2 left-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs px-2.5 py-1 rounded-full shadow-lg z-10 font-semibold"
-        >
-          🔥 Trending
-        </motion.span>
-      );
-    }
-
-    if (hasDiscount) {
-      return (
-        <motion.span 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="absolute top-2 left-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs px-2.5 py-1 rounded-full shadow-lg z-10 font-semibold"
-        >
-          {discount}% OFF
-        </motion.span>
-      );
-    }
-
-    if (stock === 0) {
-      return (
-        <motion.span 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="absolute top-2 left-2 bg-slate-700/90 text-white text-xs px-2.5 py-1 rounded-full shadow-lg z-10 font-semibold"
-        >
-          Out of Stock
-        </motion.span>
-      );
-    }
-
-    return null;
-  };
 
   return (
     <motion.div
@@ -85,78 +71,63 @@ const ProductItem = ({ id, image, name, price, finalPrice, stock, badgeType }) =
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
-      className="group relative overflow-hidden transition-all duration-300 hover:shadow-2xl rounded-2xl bg-white border border-gray-100"
+      className="group relative overflow-hidden rounded-2xl bg-white border border-gray-100"
     >
       <Link to={`/product/${id}`} className="block">
         <div className="aspect-square overflow-hidden bg-gradient-to-br from-pink-50/50 to-rose-50/50 relative rounded-t-2xl">
-          <img
-            src={
-              typeof image === "string"
-                ? image
-                : Array.isArray(image) && image.length > 0
-                ? image[0]
-                : "/placeholder.jpg"
-            }
-            alt={name}
-            onError={(e) => (e.currentTarget.src = "/placeholder.jpg")}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-
-          {/* Dynamic Badge */}
-          {renderBadge()}
-
-          {/* Quick Add to Cart Button */}
-          {stock > 0 && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileHover={{ opacity: 1, scale: 1 }}
-              onClick={handleAddToCart}
-              className="absolute top-2 right-2 bg-white/90 hover:bg-white text-rose-600 p-2 rounded-full shadow-md transition-all duration-300 backdrop-blur-sm z-10"
-              aria-label="Add to cart"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-              </svg>
-            </motion.button>
+          {hasImage ? (
+            // 🖼️ Image wins if available
+            <img
+              src={imageUrl}
+              alt={name}
+              className="absolute inset-0 w-full h-full object-cover z-10"
+            />
+          ) : hasVideo ? (
+            // 🎥 Only show video if no image
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              className="absolute inset-0 w-full h-full object-cover z-10"
+              muted
+              playsInline
+              autoPlay
+              loop
+              preload="auto"
+              poster={PLACEHOLDER}
+            />
+          ) : (
+            // 🕳️ Nothing? show placeholder
+            <img
+              src={PLACEHOLDER}
+              alt={name}
+              className="absolute inset-0 w-full h-full object-cover z-0"
+            />
           )}
         </div>
 
+        {/* Card content */}
         <div className="p-5">
-          <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-rose-700 transition-colors min-h-[2.5rem]">
+          <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[2.5rem]">
             {name}
           </h3>
           <div className="flex flex-col">
             <div className="flex items-center space-x-2">
-              {/* Final Price */}
-              <p className="text-md font-medium  text-amber-700">
-              {Number(finalPrice).toLocaleString()} {currency}
+              <p className="text-md font-medium text-amber-700">
+                {Number(finalPrice).toLocaleString()} {currency}
               </p>
-              {/* Discount % */}
               {hasDiscount && (
                 <span className="text-sm font-semibold text-green-600">
                   {discount}% OFF
                 </span>
               )}
             </div>
-            {/* Original Price */}
             {hasDiscount && (
               <p className="text-sm text-gray-500 line-through">
-                {currency}{Number(price).toLocaleString()}
+                {currency}
+                {Number(price).toLocaleString()}
               </p>
             )}
           </div>
-        </div>
-
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-6">
-          <motion.span 
-            initial={{ y: 20, opacity: 0 }}
-            whileHover={{ y: 0, opacity: 1 }}
-            className="text-white bg-gradient-to-r from-pink-600 to-rose-700 px-5 py-2.5 rounded-full text-sm font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            View Details
-          </motion.span>
         </div>
       </Link>
     </motion.div>

@@ -22,6 +22,64 @@ const fadeInUp = {
 
 const LatestCollection = () => {
   const { products = [] } = useContext(ShopContext);
+  // helper right before return/map (inline or as a small function)
+// Put these above latestProducts useMemo
+const urlFromAny = (val) => {
+  if (!val) return null;
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) {
+    for (const item of val) {
+      const u = urlFromAny(item);
+      if (u) return u;
+    }
+    return null;
+  }
+  if (typeof val === "object") {
+    // handle common shapes: Cloudinary, generic objects, nested
+    return (
+      urlFromAny(val.secure_url) ||
+      urlFromAny(val.url) ||
+      urlFromAny(val.src) ||
+      urlFromAny(val.path) ||
+      urlFromAny(val.image) ||
+      urlFromAny(val.previewUrl) ||
+      null
+    );
+  }
+  return null;
+};
+
+const pickFirstImage = (p) => {
+  const candidates = [
+    ...(p.variants?.flatMap(v => v?.images ?? []) ?? []),
+    p.images,
+    p.image,
+    p.gallery,
+    p.coverImage,
+    p.thumbnail,
+  ];
+  for (const c of candidates) {
+    const u = urlFromAny(c);
+    if (u) return u;
+  }
+  return null;
+};
+
+const pickFirstVideo = (p) => {
+  const candidates = [
+    ...(p.variants?.flatMap(v => v?.videos ?? []) ?? []),
+    p.videos,
+    p.video,
+    p.media,
+  ];
+  for (const c of candidates) {
+    const u = urlFromAny(c);
+    if (u) return u;
+  }
+  return null;
+};
+
+
 
   // derive latestProducts (auto-updates when `products` changes)
   const latestProducts = useMemo(() => {
@@ -74,25 +132,26 @@ const LatestCollection = () => {
           className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
           variants={containerVariants}
         >
-          {latestProducts.map((item, idx) => (
-            <motion.div key={item._id || idx} variants={itemVariants} whileHover={{ y: -6 }}>
-              <ProductItem
-                id={item._id}
-                // prefer variants image, then image array, then fallback
-                image={
-                  item.variants?.[0]?.images?.[0] ||
-                  (Array.isArray(item.image) ? item.image[0] : item.image) ||
-                  "/fallback.jpg"
-                }
-                name={item.name}
-                price={item.price}
-                finalPrice={item.finalPrice}
-                stock={(item.variants?.some((v) => v.stock > 0) || item.stock > 0) ? 1 : 0}
-                badgeType="new"
-                // If your ProductItem supports a 'large' or 'compact' prop, pass it to emphasize image size
-              />
-            </motion.div>
-          ))}
+        {latestProducts.map((item, idx) => {
+  const img = pickFirstImage(item);
+  console.log("Resolved image for", item.name, "=>", img, "raw:", item.image || item.images || item.variants);
+  return (
+    <motion.div key={item._id || idx} variants={itemVariants} whileHover={{ y: -6 }}>
+      <ProductItem
+        id={item._id}
+        image={img}
+        video={pickFirstVideo(item)}
+        name={item.name}
+        price={item.price}
+        finalPrice={item.finalPrice ?? item.price}
+        stock={item.stock}
+        badgeType={item.isNew ? "new" : item.isTrending ? "trend" : undefined}
+      />
+    </motion.div>
+  );
+})}
+
+
         </motion.div>
       )}
 

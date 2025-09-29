@@ -51,22 +51,49 @@ const Product = () => {
   const media = (prod.variants || []).flatMap((variant) => {
     const vId = variant._id;
     const color = variant.color;
-    const variantFirstImage = (variant.images && variant.images.length > 0) ? variant.images[0] : null;
-    const imgs = (variant.images || []).map((url) => ({ type: "image", url, variantId: vId, color }));
+
+    const imgs = (variant.images || []).map((url) => ({
+      type: "image",
+      url,
+      variantId: vId,
+      color,
+    }));
+
     const vids = (variant.videos || []).map((url) => ({
       type: "video",
       url,
       variantId: vId,
       color,
-      // poster: use the variant's first image if available, otherwise product-level image
-      poster: variantFirstImage || prod.image || null,
+      // 👇 Always ensure poster exists
+      poster:
+        (variant.images && variant.images[0]) ||
+        prod.image ||
+        url + "#t=0.5" || // <-- fallback: use first frame of the video
+        null,
     }));
+
     return [...imgs, ...vids];
   });
 
-  if (media.length === 0 && prod.image) {
-    return [{ type: "image", url: prod.image, variantId: null, color: "default" }];
+  if (media.length === 0) {
+    if (prod.image) {
+      return [
+        { type: "image", url: prod.image, variantId: null, color: "default" },
+      ];
+    }
+    if (prod.videos && prod.videos.length > 0) {
+      return [
+        {
+          type: "video",
+          url: prod.videos[0],
+          variantId: null,
+          color: "default",
+          poster: prod.image || prod.videos[0] + "#t=0.5" || PLACEHOLDER_IMG,
+        },
+      ];
+    }
   }
+
   return media;
 };
 
@@ -437,19 +464,22 @@ const renderMainMedia = (media) => {
     }}
   />
 ) : (
-  <div className="w-full h-full bg-black relative flex items-center justify-center">
-    {/* poster thumbnail */}
-    <img
-      src={ normalizeImageUrl(m.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG }
-      alt={`video-thumb-${index}`}
-      className="w-full h-full object-cover opacity-90"
+  <div className="w-full h-full relative flex items-center justify-center bg-black">
+    <video
+      className="w-full h-full object-cover"
+      src={ normalizeImageUrl(m.url) }
+      muted
+      playsInline
+      preload="metadata"
+      poster={ normalizeImageUrl(m.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG }
+      crossOrigin="anonymous"
       onError={(e) => {
-        e.currentTarget.onerror = null;
-        e.currentTarget.src = normalizeImageUrl(product.image) || PLACEHOLDER_IMG;
+        // if video thumb can’t load, fall back to poster placeholder
+        e.currentTarget.poster = PLACEHOLDER_IMG;
       }}
     />
-    {/* small play icon overlay */}
-    <svg className="absolute w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" aria-hidden>
+    {/* play glyph overlay */}
+    <svg className="absolute w-6 h-6 opacity-90" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M5 3v18l15-9L5 3z" fill="white" />
     </svg>
   </div>

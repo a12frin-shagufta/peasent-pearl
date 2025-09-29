@@ -17,6 +17,57 @@ const PAK_PROVINCES = [
   "Azad Jammu & Kashmir",
 ];
 
+const PLACEHOLDER_IMG =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
+       <rect width='100%' height='100%' fill='#f3f4f6'/>
+       <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+         fill='#9ca3af' font-family='Arial' font-size='14'>Product</text>
+     </svg>`
+  );
+
+const urlFromAny = (val) => {
+  if (!val) return null;
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) {
+    for (const it of val) {
+      const u = urlFromAny(it);
+      if (u) return u;
+    }
+    return null;
+  }
+  if (typeof val === "object") {
+    return (
+      urlFromAny(val.secure_url) ||
+      urlFromAny(val.url) ||
+      urlFromAny(val.src) ||
+      urlFromAny(val.path) ||
+      urlFromAny(val.image) ||
+      null
+    );
+  }
+  return null;
+};
+
+const pickThumbMedia = (product, variant) => {
+  const image =
+    urlFromAny(variant?.images?.[0]) ||
+    urlFromAny(product?.image) ||
+    null;
+
+  const video =
+    urlFromAny(variant?.videos?.[0]) ||
+    urlFromAny(product?.videos?.[0]) ||
+    null;
+
+  return {
+    image,
+    video,
+    poster: image || PLACEHOLDER_IMG,
+  };
+};
+
 const PlaceOrder = () => {
   const { cartItems, products, currency, delivery_fee, clearCart } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
@@ -57,38 +108,42 @@ const PlaceOrder = () => {
   // Map cart items to cart data
   useEffect(() => {
     const items = (cartItems || [])
-     .map((ci) => {
-  if (!ci || !ci.productId) return null;
-  const product = products?.find((p) => String(p._id) === String(ci.productId));
-  if (!product) return null;
+      .map((ci) => {
+        if (!ci || !ci.productId) return null;
+        const product = products?.find((p) => String(p._id) === String(ci.productId));
+        if (!product) return null;
 
-  let variant = null;
-  if (ci.variantId) {
-    variant = product.variants?.find((v) => String(v._id) === String(ci.variantId));
-  }
-  if (!variant && ci.variantColor) {
-    variant = product.variants?.find(
-      (v) => (v.color || "").toLowerCase() === String(ci.variantColor).toLowerCase()
-    );
-  }
+        let variant = null;
+        if (ci.variantId) {
+          variant = product.variants?.find((v) => String(v._id) === String(ci.variantId));
+        }
+        if (!variant && ci.variantColor) {
+          variant = product.variants?.find(
+            (v) => (v.color || "").toLowerCase() === String(ci.variantColor).toLowerCase()
+          );
+        }
 
-  const variantColor = String(variant?.color ?? ci.variantColor ?? "").trim(); // 👈 define it
-  const image = variant?.images?.[0] || product.image || "";
-  const unitPrice = product.finalPrice ?? product.price ?? 0;
-  const quantity = Math.max(0, Number(ci.quantity || 0));
+        const variantColor = String(variant?.color ?? ci.variantColor ?? "").trim();
 
-  return {
-    _id: `${ci.productId}_${variantColor || "default"}`, // 👈 use it
-    productId: ci.productId,
-    name: product.name,
-    image,
-    variantColor, // 👈 keep color only
-    unitPrice,
-    quantity,
-    total: unitPrice * quantity,
-  };
-})
+        /* --- CHANGED: video-first media selection --- */
+        const { image, video, poster } = pickThumbMedia(product, variant);
 
+        const unitPrice = product.finalPrice ?? product.price ?? 0;
+        const quantity = Math.max(0, Number(ci.quantity || 0));
+
+        return {
+          _id: `${ci.productId}_${variantColor || "default"}`,
+          productId: ci.productId,
+          name: product.name,
+          image,           // keep image for payload/preview
+          video,           // NEW
+          poster,          // NEW
+          variantColor,
+          unitPrice,
+          quantity,
+          total: unitPrice * quantity,
+        };
+      })
       .filter(Boolean);
 
     setCartData(items);
@@ -208,7 +263,7 @@ const PlaceOrder = () => {
         productId: it.productId,
         key: it._id,
         name: it.name,
-        image: it.image,
+        image: it.image || it.poster, 
         // variant: it.variant,
          variantColor: it.variantColor || "",   // 👈 send col
         quantity: Number(it.quantity),
@@ -297,6 +352,49 @@ const PlaceOrder = () => {
     cartData.length > 0 &&
     (!proofRequired || (file && form.transactionRef && form.senderLast4 && form.senderLast4.trim().length === 4)) &&
     isValidEmail(form.email);
+
+    // put these above the component (reuse your PLACEHOLDER_IMG if you like)
+const urlFromAny = (val) => {
+  if (!val) return null;
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) {
+    for (const it of val) {
+      const u = urlFromAny(it);
+      if (u) return u;
+    }
+    return null;
+  }
+  if (typeof val === "object") {
+    return (
+      urlFromAny(val.secure_url) ||
+      urlFromAny(val.url) ||
+      urlFromAny(val.src) ||
+      urlFromAny(val.path) ||
+      urlFromAny(val.image) ||
+      null
+    );
+  }
+  return null;
+};
+
+const pickThumbMedia = (product, variant) => {
+  const image =
+    urlFromAny(variant?.images?.[0]) ||
+    urlFromAny(product?.image) ||
+    null;
+
+  const video =
+    urlFromAny(variant?.videos?.[0]) ||
+    urlFromAny(product?.videos?.[0]) ||
+    null;
+
+  return {
+    image,
+    video,
+    poster: image || PLACEHOLDER_IMG, // poster for video + last-resort placeholder
+  };
+};
+
 
   return (
     <div className="max-w-6xl mx-auto px-2 py-5">
@@ -558,18 +656,39 @@ const PlaceOrder = () => {
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Summary</h3>
 
               {/* Cart Items */}
-              <div className="mb-4 max-h-64 overflow-y-auto">
+            <div className="mb-4 max-h-64 overflow-y-auto">
                 {cartData.map((item) => (
                   <div key={item._id} className="flex items-center py-3 border-b border-gray-100 last:border-b-0">
                     <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-md overflow-hidden">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                    </div>
+  {item.image ? (
+    <img
+      src={item.image}
+      alt={item.name}
+      className="w-full h-full object-cover"
+    />
+  ) : item.video ? (
+    <video
+      src={item.video}
+      className="w-full h-full object-cover"
+      muted
+      playsInline
+      preload="metadata"
+      poster={item.poster} // fallback poster we built earlier
+    />
+  ) : (
+    <img
+      src={item.poster}
+      alt="placeholder"
+      className="w-full h-full object-cover"
+    />
+  )}
+</div>
+
                     <div className="ml-4 flex-1">
                       <h4 className="text-sm font-medium text-gray-800">{item.name}</h4>
                       {item.variantColor && (
-  <p className="text-xs text-gray-500">Color: {item.variantColor}</p>
-)}
-
+                        <p className="text-xs text-gray-500">Color: {item.variantColor}</p>
+                      )}
                       <div className="flex justify-between items-center mt-1">
                         <span className="text-sm text-gray-600">Qty: {item.quantity}</span>
                         <span className="text-sm font-medium text-gray-800"> {item.total.toFixed(2)} {currency}</span>

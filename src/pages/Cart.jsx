@@ -6,6 +6,58 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiShoppingBag, FiArrowRight, FiTrash2 } from "react-icons/fi";
 import { FaArrowLeft } from "react-icons/fa";
 
+// --- helpers ---
+const PLACEHOLDER_THUMB =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>
+       <rect width='100%' height='100%' fill='#f3f4f6'/>
+       <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+         fill='#9ca3af' font-family='Arial' font-size='14'>No media</text>
+     </svg>`
+  );
+
+const urlFromAny = (val) => {
+  if (!val) return null;
+  if (typeof val === "string") return val;
+  if (Array.isArray(val)) {
+    for (const it of val) {
+      const u = urlFromAny(it);
+      if (u) return u;
+    }
+    return null;
+  }
+  if (typeof val === "object") {
+    return (
+      urlFromAny(val.secure_url) ||
+      urlFromAny(val.url) ||
+      urlFromAny(val.src) ||
+      urlFromAny(val.path) ||
+      urlFromAny(val.image) ||
+      null
+    );
+  }
+  return null;
+};
+
+const pickThumbMedia = (product, variant) => {
+  const img =
+    urlFromAny(variant?.images?.[0]) ||
+    urlFromAny(product?.image) ||
+    null;
+
+  const vid =
+    urlFromAny(variant?.videos?.[0]) ||
+    urlFromAny(product?.videos?.[0]) ||
+    null;
+
+  return {
+    image: img,
+    video: vid,
+    poster: img || PLACEHOLDER_THUMB,
+  };
+};
+
 const Cart = () => {
   const {
     products,
@@ -35,21 +87,26 @@ const Cart = () => {
           variant = product.variants?.find((v) => String(v._id) === String(ci.variantId));
         }
         if (!variant && ci.variantColor) {
-          variant = product.variants?.find((v) => (v.color || "").toLowerCase() === String(ci.variantColor).toLowerCase());
+          variant = product.variants?.find(
+            (v) => (v.color || "").toLowerCase() === String(ci.variantColor).toLowerCase()
+          );
         }
 
-        // fallback image
-        const image = variant?.images?.[0] || product.image || null;
+        // 👇 updated: pick video or image
+        const { image, video, poster } = pickThumbMedia(product, variant);
+
         const priceToUse = product.finalPrice ?? product.price;
         const quantity = Math.max(1, Number(ci.quantity) || 1);
 
         return {
-          cartKey: `${ci.productId}_${ci.variantId || ci.variantColor || "default"}`, // for keys or debugging
+          cartKey: `${ci.productId}_${ci.variantId || ci.variantColor || "default"}`,
           productId: ci.productId,
           variantId: ci.variantId || null,
           name: product.name,
           color: variant?.color || ci.variantColor || "default",
           image,
+          video,
+          poster,
           price: product.price,
           finalPrice: product.finalPrice,
           priceToUse,
@@ -76,7 +133,6 @@ const Cart = () => {
 
   const subtotal = cartData.reduce((sum, item) => sum + Number(item.total || 0), 0);
 
-  // <-- NEW: dynamic shipping: free if subtotal > 3000
   const shipping = subtotal > 3000 ? 0 : Number(delivery_fee || 0);
   const grandTotal = subtotal + shipping;
 
@@ -125,14 +181,39 @@ const Cart = () => {
                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }} className="flex flex-col sm:flex-row gap-6 p-4 bg-white rounded-xl shadow-sm border border-amber-100">
                   <div className="flex-shrink-0">
-                    {item.image ? (
-                      <img src={item.image} alt={item.name}
-                        className="w-full h-32 sm:w-32 sm:h-32 object-cover rounded-lg"
-                        onError={(e) => { e.currentTarget.src = "/placeholder-image.jpg"; }} />
-                    ) : (
-                      <div className="w-full h-32 sm:w-32 sm:h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">No Image</div>
-                    )}
-                  </div>
+  {item.image ? (
+    // 🖼️ Show image if available (even if video also exists)
+    <img
+      src={item.image}
+      alt={item.name}
+      className="w-full h-32 sm:w-32 sm:h-32 object-cover rounded-lg"
+      onError={(e) => { e.currentTarget.src = item.poster || PLACEHOLDER_THUMB; }}
+    />
+  ) : item.video ? (
+    // 🎥 Only show video if no image
+    <video
+      src={item.video}
+      className="w-full h-32 sm:w-32 sm:h-32 object-cover rounded-lg"
+      muted
+      playsInline
+      autoPlay
+      loop
+      preload="metadata"
+      poster={item.poster}
+      onError={(e) => {
+        e.currentTarget.outerHTML = `<img src="${item.poster}" class="w-full h-32 sm:w-32 sm:h-32 object-cover rounded-lg" alt="${item.name}" />`;
+      }}
+    />
+  ) : (
+    // 🕳️ Placeholder fallback
+    <img
+      src={item.poster || PLACEHOLDER_THUMB}
+      alt={item.name}
+      className="w-full h-32 sm:w-32 sm:h-32 object-cover rounded-lg"
+    />
+  )}
+</div>
+
 
                   <div className="flex-1">
                     <div className="flex justify-between">
@@ -180,11 +261,9 @@ const Cart = () => {
               <div className="flex justify-between"><span className="text-gray-900">Subtotal</span><span className="font-medium text-amber-900"> {subtotal.toFixed(2)} {currency}</span></div>
               <div className="flex justify-between">
                 <span className="text-gray-700">Delivery </span>
-               
                 <span className="font-medium ml-10 text-amber-900">
-                 {shipping}   {currency}
-                
-                  {shipping === 0 &&  <span className="ml-2 text-xs text-green-600">(Free delivery for orders over 3000)</span>}
+                 {shipping} {currency}
+                 {shipping === 0 &&  <span className="ml-2 text-xs text-green-600">(Free delivery for orders over 3000)</span>}
                 </span>
               </div>
               <div className="flex justify-between pt-4 border-t border-amber-200"><span className="text-lg font-medium text-amber-900">Total</span><span className="text-lg font-medium text-amber-900"> {grandTotal.toFixed(2)} {currency}</span></div>
