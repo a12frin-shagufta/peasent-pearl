@@ -550,21 +550,54 @@ const pickThumbMedia = (product, variant) => {
 
                     {form.paymentMethod === "cod" ? (
                       <>
-                        <p className="text-sm text-gray-600 mb-3">Please transfer <strong>{currency} {advanceAmount}</strong> now to confirm your order.</p>
-                        <div className="bg-amber-50 p-3 rounded-md mb-4">
-                          <div className="text-sm font-medium">{paymentDetails.bankName}</div>
-                          <div className="text-sm">{paymentDetails.accountName}</div>
-                          <div className="flex items-center mt-1">
-                            <div className="text-sm flex-1">Account: {paymentDetails.accountNumber}</div>
-                            <button type="button" onClick={() => copyToClipboard(paymentDetails.accountNumber)} className="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded hover:bg-amber-200 transition-colors">Copy</button>
-                          </div>
-                          <div className="text-sm mt-1">IBAN: {paymentDetails.iban}</div>
-                          <div className="flex items-center mt-2">
-                            <div className="text-sm flex-1">JazzCash ({paymentDetails.jazzName}): {paymentDetails.jazzNumber}</div>
-                            <button type="button" onClick={() => copyToClipboard(paymentDetails.jazzNumber)} className="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded hover:bg-amber-200 transition-colors">Copy</button>
-                          </div>
-                        </div>
-                      </>
+    <p className="text-sm text-gray-600 mb-3">
+      Please transfer <strong>{currency} {advanceAmount}</strong> now to confirm your order.
+    </p>
+    <div className="bg-amber-50 p-3 rounded-md mb-4">
+      {/* Bank */}
+      <div className="text-sm font-medium">{paymentDetails.bankName}</div>
+      <div className="text-sm">{paymentDetails.accountName}</div>
+      <div className="flex items-center mt-1">
+        <div className="text-sm flex-1">Account: {paymentDetails.accountNumber}</div>
+        <button
+          type="button"
+          onClick={() => copyToClipboard(paymentDetails.accountNumber)}
+          className="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded hover:bg-amber-200 transition-colors"
+        >
+          Copy
+        </button>
+      </div>
+      <div className="text-sm mt-1">IBAN: {paymentDetails.iban}</div>
+
+      {/* JazzCash */}
+      <div className="flex items-center mt-2">
+        <div className="text-sm flex-1">
+          JazzCash ({paymentDetails.jazzName}): {paymentDetails.jazzNumber}
+        </div>
+        <button
+          type="button"
+          onClick={() => copyToClipboard(paymentDetails.jazzNumber)}
+          className="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded hover:bg-amber-200 transition-colors"
+        >
+          Copy
+        </button>
+      </div>
+
+      {/* Easypaisa — NEW under COD */}
+      <div className="flex items-center mt-2">
+        <div className="text-sm flex-1">
+          Easypaisa ({paymentDetails.easypaisaName}): {paymentDetails.easypaisaNumber}
+        </div>
+        <button
+          type="button"
+          onClick={() => copyToClipboard(paymentDetails.easypaisaNumber)}
+          className="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded hover:bg-amber-200 transition-colors"
+        >
+          Copy
+        </button>
+      </div>
+    </div>
+  </>
                     ) : form.paymentMethod === "bank" ? (
                       <div className="bg-amber-50 p-3 rounded-md mb-4">
                         <div className="text-sm font-medium">{paymentDetails.bankName}</div>
