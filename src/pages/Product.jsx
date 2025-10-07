@@ -599,24 +599,47 @@ const renderMainMedia = (media) => {
               <div className="pt-6 border-t border-gray-100">
                 <h3 className="text-sm font-semibold text-gray-800 mb-4 uppercase tracking-wider">SELECT COLOR: <span className="text-pink-600">{selectedVariant?.color}</span></h3>
                 <div className="flex flex-wrap gap-3">
-                  {product.variants.map((variant) => {
-                    const available = variantStock(variant);
-                    const disabled = available <= 0;
-                    const selected = selectedVariant?._id === variant._id;
-                    return (
-                      <button
-                        key={variant._id}
-                        onClick={() => trySelectVariant(variant)}
-                        disabled={disabled}
-                        className={`relative flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all ${selected ? "border-pink-500 shadow-lg" : "border-gray-300 hover:border-pink-300"} ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
-                        title={disabled ? "Out of stock" : `${variant.color} — ${available} available`}
-                      >
-                        <div className="w-10 h-10 rounded-full" style={{ backgroundColor: variant.color.toLowerCase() }} />
-                        {selected && !disabled && <FiCheck className="absolute text-white text-sm bg-pink-500 rounded-full p-1" />}
-                        {disabled && <div className="absolute -bottom-5 text-xs text-gray-500">Out</div>}
-                      </button>
-                    );
-                  })}
+             {product.variants.map((variant) => {
+  const available = variantStock(variant);
+  const disabled = available <= 0;
+  const selected = selectedVariant?._id === variant._id;
+
+  // Try to use CSS color if valid, else fallback to image
+  const colorStyle = {};
+  const isCssColor = CSS.supports("color", variant.color);
+
+  if (isCssColor) {
+    colorStyle.backgroundColor = variant.color.toLowerCase();
+  }
+
+  return (
+    <button
+      key={variant._id}
+      onClick={() => trySelectVariant(variant)}
+      disabled={disabled}
+      className={`relative flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all 
+        ${selected ? "border-pink-500 shadow-lg" : "border-gray-300 hover:border-pink-300"} 
+        ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
+      title={disabled ? "Out of stock" : `${variant.color} — ${available} available`}
+    >
+      {isCssColor ? (
+        <div className="w-10 h-10 rounded-full" style={colorStyle} />
+      ) : (
+        <img
+          src={variant.images?.[0] || PLACEHOLDER_IMG}
+          alt={variant.color}
+          className="w-10 h-10 rounded-full object-cover"
+        />
+      )}
+
+      {selected && !disabled && (
+        <FiCheck className="absolute text-white text-sm bg-pink-500 rounded-full p-1" />
+      )}
+      {disabled && <div className="absolute -bottom-5 text-xs text-gray-500">Out</div>}
+    </button>
+  );
+})}
+
                 </div>
               </div>
             )}
