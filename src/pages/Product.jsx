@@ -682,15 +682,15 @@ const renderMainMedia = (media) => {
 
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
   <div>
-    <label className="block text-sm text-gray-700 mb-1">First name (engraving)</label>
+    <label className="block text-sm text-gray-700 mb-1">customization ( if any)</label>
     <input
       value={firstName}
       onChange={(e) => setFirstName(normalize(e.target.value))}
-      placeholder="First Name"
+      placeholder="optional"
       className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
     />
   </div>
-  <div>
+  {/* <div>
     <label className="block text-sm text-gray-700 mb-1">Last name (engraving)</label>
     <input
       value={lastName}
@@ -698,7 +698,7 @@ const renderMainMedia = (media) => {
       placeholder="Last Name"
       className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
     />
-  </div>
+  </div> */}
 </div>
 
 
