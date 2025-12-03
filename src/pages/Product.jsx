@@ -40,7 +40,7 @@ const Product = () => {
     return 0;
   };
 
-  const normalize = (v) => v.replace(/[^a-zA-Z\s]/g, "").slice(0, 12);
+  // const normalize = (v) => v.replace(/[^a-zA-Z\s]/g, "").slice(0, 12);
 
   
 
@@ -684,11 +684,12 @@ const renderMainMedia = (media) => {
   <div>
     <label className="block text-sm text-gray-700 mb-1">customization ( if any)</label>
     <input
-      value={firstName}
-      onChange={(e) => setFirstName(normalize(e.target.value))}
-      placeholder="optional"
-      className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
-    />
+  value={firstName}
+  onChange={(e) => setFirstName(e.target.value)}
+  placeholder="optional"
+  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-amber-500 focus:border-amber-500"
+/>
+
   </div>
   {/* <div>
     <label className="block text-sm text-gray-700 mb-1">Last name (engraving)</label>
