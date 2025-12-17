@@ -24,6 +24,8 @@ const Product = () => {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -370,38 +372,31 @@ const renderMainMedia = (media) => {
   // note: ensure video element is clickable, not covered by parent click handler
   return (
     <div className="w-full h-96 bg-black relative">
-      {/* optional play overlay for visual cue (not blocking) */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" className="opacity-75">
-          <path d="M5 3v18l15-9L5 3z" fill="white" />
-        </svg>
-      </div>
+{!isVideoPlaying && (
+  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" className="opacity-75">
+      <path d="M5 3v18l15-9L5 3z" fill="white" />
+    </svg>
+  </div>
+)}
 
-      <video
-        key={url}
-        className="w-full h-full object-cover z-0"
-        playsInline
-        muted
-        loop
-        // don't autoplay if you prefer user interaction — keep muted for autoplay support
-        autoPlay
-        preload="metadata"
-        poster={normalizeImageUrl(media.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG}
-        crossOrigin="anonymous"
-        controls
-        onClick={(e) => {
-          // let user interact: stop propagation so parent zoom click doesn't get called
-          e.stopPropagation();
-        }}
-        onCanPlay={(e) => {
-          const vid = e.currentTarget;
-          // try explicit play (non-fatal)
-          vid.play?.().catch(() => {/* autoplay blocked; user must interact */});
-        }}
-        onError={(e) => {
-          console.error("Video element load error for", url, e);
-        }}
-      >
+
+<video
+  key={url}
+  className="w-full h-full object-cover z-0"
+  playsInline
+  muted
+  loop
+  autoPlay
+  preload="metadata"
+  poster={normalizeImageUrl(media.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG}
+  crossOrigin="anonymous"
+  controls
+  onPlay={() => setIsVideoPlaying(true)}
+  onPause={() => setIsVideoPlaying(false)}
+  onEnded={() => setIsVideoPlaying(false)}
+>
+
         {/* console log the final url so you can confirm in browser console */}
         {console.log("renderMainMedia: video source ->", url)}
        <source src={
