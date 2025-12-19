@@ -371,41 +371,35 @@ const renderMainMedia = (media) => {
   // video branch
   // note: ensure video element is clickable, not covered by parent click handler
   return (
-    <div className="w-full h-96 bg-black relative">
-{!isVideoPlaying && (
-  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" className="opacity-75">
-      <path d="M5 3v18l15-9L5 3z" fill="white" />
-    </svg>
-  </div>
+    <div  className="w-full h-96 bg-black relative">
+
+
+
+    {allMedia[activeMediaIndex].type === "video" && (
+  <video 
+    key={url}
+    className="w-full max-h-[45vh] bg-black"
+    playsInline
+    muted
+    preload="metadata"
+    poster={
+      normalizeImageUrl(media.poster) ||
+      normalizeImageUrl(product.image) ||
+      PLACEHOLDER_IMG
+    }
+    controls
+    onPlay={() => setIsVideoPlaying(true)}
+    onPause={() => setIsVideoPlaying(false)}
+    onEnded={() => setIsVideoPlaying(false)}
+  >
+    <source
+      src={allMedia[activeMediaIndex].url}
+      type="video/mp4"
+    />
+    Your browser does not support the video tag.
+  </video>
 )}
 
-
-<video
-  key={url}
-  className="w-full h-full object-cover z-0"
-  playsInline
-  muted
-  loop
-  autoPlay
-  preload="metadata"
-  poster={normalizeImageUrl(media.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG}
-  crossOrigin="anonymous"
-  controls
-  onPlay={() => setIsVideoPlaying(true)}
-  onPause={() => setIsVideoPlaying(false)}
-  onEnded={() => setIsVideoPlaying(false)}
->
-
-        {/* console log the final url so you can confirm in browser console */}
-        {console.log("renderMainMedia: video source ->", url)}
-       <source src={
-  allMedia[activeMediaIndex].type === "video"
-    ? allMedia[activeMediaIndex].url
-    : normalizeImageUrl(allMedia[activeMediaIndex].url)
-} />
-        Your browser does not support the video tag.
-      </video>
     </div>
   );
 };
