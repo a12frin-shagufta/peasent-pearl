@@ -156,17 +156,17 @@ const buildAllMedia = (prod) => {
 }, [product, products]);
 useEffect(() => {
   if (product) {
-    // console.log('📦 Product data:', product);
-    // console.log('🎬 All media:', allMedia);
-    // console.log('🎬 Active media:', allMedia[activeMediaIndex]);
+    console.log('📦 Product data:', product);
+    console.log('🎬 All media:', allMedia);
+    console.log('🎬 Active media:', allMedia[activeMediaIndex]);
     
     // Check video data specifically
     if (allMedia[activeMediaIndex]?.type === 'video') {
       const videoData = allMedia[activeMediaIndex];
-      // console.log('🔍 Video data:', videoData);
-      // console.log('🔍 Video key:', videoData.key);
-      // console.log('🔍 Is object?', typeof videoData.key === 'object');
-      // console.log('🔍 Object keys:', videoData.key ? Object.keys(videoData.key) : 'No key');
+      console.log('🔍 Video data:', videoData);
+      console.log('🔍 Video key:', videoData.key);
+      console.log('🔍 Is object?', typeof videoData.key === 'object');
+      console.log('🔍 Object keys:', videoData.key ? Object.keys(videoData.key) : 'No key');
     }
   }
 }, [product, activeMediaIndex]);

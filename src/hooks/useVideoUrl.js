@@ -8,11 +8,11 @@ const useVideoUrl = (videoInput) => {
 
   // Debug input
   // useEffect(() => {
-  //   // console.log('🎬 useVideoUrl received:', videoInput);
+    console.log('🎬 useVideoUrl received:', videoInput);
   // }, [videoInput]);
 
   const fetchVideoUrl = useCallback(async (forceRefresh = false) => {
-    // console.log('🔄 Fetching video URL for:', videoInput);
+    console.log('🔄 Fetching video URL for:', videoInput);
     
     if (!videoInput) {
       setUrl('');
@@ -25,11 +25,11 @@ const useVideoUrl = (videoInput) => {
       
       // CASE 1: Input is an object with signedUrl
       if (videoInput && typeof videoInput === 'object' && videoInput.signedUrl) {
-        // console.log('✅ Using signedUrl from object:', videoInput.signedUrl.substring(0, 50) + '...');
+        console.log('✅ Using signedUrl from object:', videoInput.signedUrl.substring(0, 50) + '...');
         
         // Check if URL is expired
         if (videoInput.expiresAt && videoInput.expiresAt > Date.now()) {
-          // console.log('✅ Signed URL is still valid');
+          console.log('✅ Signed URL is still valid');
           setUrl(videoInput.signedUrl);
           setLoading(false);
           return;
