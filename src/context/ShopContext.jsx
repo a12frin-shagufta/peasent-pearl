@@ -53,40 +53,22 @@ const ShopContextProvider = (props) => {
   });
 
   const makeCartKey = ({
-  productId,
-  variantId,
-  variantColor,
-  engravingFirstName = "",
-  engravingLastName = "",
-}) => {
-  const v = variantId || variantColor || "default";
-  const fn = String(engravingFirstName || "").trim().toLowerCase();
-  const ln = String(engravingLastName || "").trim().toLowerCase();
-  return `${productId}__${v}__fn_${fn}__ln_${ln}`;
-};
+    productId,
+    variantId,
+    variantColor,
+    engravingFirstName = "",
+    engravingLastName = "",
+  }) => {
+    const v = variantId || variantColor || "default";
+    const fn = String(engravingFirstName || "").trim().toLowerCase();
+    const ln = String(engravingLastName || "").trim().toLowerCase();
+    return `${productId}__${v}__fn_${fn}__ln_${ln}`;
+  };
+
   // -----------------------
   // Data fetching
   // -----------------------
   useEffect(() => {
-    try {
-      const toSave = cartItems
-        .filter((it) => it && it.productId && it.quantity > 0)
-        .map((it) => ({
-          productId: it.productId,
-          variantId: it.variantId,
-          variantColor: it.variantColor,
-          quantity: Number(it.quantity),
-          engravingFirstName: it.engravingFirstName || "",
-          engravingLastName: it.engravingLastName || "",
-          cartKey: it.cartKey || makeCartKey(it),
-        }));
-      localStorage.setItem(LOCAL_KEY, JSON.stringify(toSave));
-    } catch (e) {
-      console.warn("Failed to save cart:", e);
-    }
-  }, [cartItems]);
-
-   useEffect(() => {
     const fetchData = async () => {
       try {
         const [productRes, offerRes, categoryRes] = await Promise.all([
@@ -94,8 +76,7 @@ const ShopContextProvider = (props) => {
           axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/offer/active`),
           axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/category/list`),
         ]);
-        // ... keep your existing canon + offers logic ...
-        // (PASTE your existing mapping logic back here unchanged)
+
         const productList = productRes.data.products || [];
         const activeOffers = offerRes.data.offers || [];
         const categoryList = categoryRes.data.categories || [];
@@ -124,7 +105,11 @@ const ShopContextProvider = (props) => {
         const findProductCategoryIdOrName = (product) => {
           if (!product) return { id: null, name: null, subcategory: null };
           if (product.category && typeof product.category === "object") {
-            return { id: product.category._id || null, name: product.category.name || null, subcategory: product.subcategory || null };
+            return { 
+              id: product.category._id || null, 
+              name: product.category.name || null, 
+              subcategory: product.subcategory || null 
+            };
           }
           if (product.category && typeof product.category === "string") {
             const val = product.category.trim();
@@ -154,6 +139,9 @@ const ShopContextProvider = (props) => {
         };
 
         const updatedProducts = productList.map((product) => {
+          // Preserve all original product data including videos
+          const productCopy = { ...product };
+          
           const { id: productCategoryId, name: productCategoryName, subcategory: productSubcategory } =
             findProductCategoryIdOrName(product);
 
@@ -194,8 +182,9 @@ const ShopContextProvider = (props) => {
           const basePrice = Number(product.price || 0);
           const finalPrice = Math.round(basePrice * (1 - bestPercent / 100));
 
+          // Return the product with all original data PLUS the calculated fields
           return {
-            ...product,
+            ...productCopy, // This preserves videos, variants, images, etc.
             finalPrice,
             appliedOffer: bestOffer || null,
             appliedDiscountPercent: bestPercent,
@@ -216,7 +205,6 @@ const ShopContextProvider = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   // persist cart to localStorage whenever it changes
   useEffect(() => {
     try {
@@ -227,6 +215,9 @@ const ShopContextProvider = (props) => {
           variantId: it.variantId,
           variantColor: it.variantColor,
           quantity: Number(it.quantity),
+          engravingFirstName: it.engravingFirstName || "",
+          engravingLastName: it.engravingLastName || "",
+          cartKey: it.cartKey || makeCartKey(it),
         }));
       localStorage.setItem(LOCAL_KEY, JSON.stringify(toSave));
     } catch (e) {
@@ -237,7 +228,7 @@ const ShopContextProvider = (props) => {
   // -----------------------
   // CART API
   // -----------------------
-const addToCart = (
+  const addToCart = (
     productId,
     qty = 1,
     variantId = null,
@@ -261,12 +252,12 @@ const addToCart = (
         const copy = [...prev];
         copy[idx] = { ...copy[idx], quantity: copy[idx].quantity + payload.quantity };
         return copy;
-        }
+      }
       return [...prev, { ...payload, cartKey: key }];
     });
   };
 
- const updateQuantityByKey = (cartKey, newQuantity) => {
+  const updateQuantityByKey = (cartKey, newQuantity) => {
     setCartItems((prev) =>
       prev.map((it) =>
         it.cartKey === cartKey
@@ -318,11 +309,12 @@ const addToCart = (
 
   const getCartCount = () =>
     cartItems.reduce((sum, it) => sum + Number(it.quantity || 0), 0);
+
   // -----------------------
   // Provider value
   // -----------------------
   const value = {
-     products,
+    products,
     loadingProducts,
     currency,
     offers,
