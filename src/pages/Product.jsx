@@ -401,7 +401,7 @@ const renderMainMedia = () => {
     return (
       <div className="w-full h-96 bg-black relative" style={{ minHeight: '384px' }}>
         <VideoPlayer
-          videoKey={media.key}
+ videoKey={media.signedUrl}  
           poster={
             normalizeImageUrl(media.poster) ||
             normalizeImageUrl(product.image) ||
