@@ -69,14 +69,34 @@ const buildAllMedia = (prod) => {
       color,
     }));
     
-    // Store video key, not URL
-    const vids = (variant.videos || []).map((fileName) => ({
-      type: "video",
-      key: fileName, // Store the key for signed URL generation
-      variantId: vId,
-      color,
-      poster: (variant.images && variant.images[0]) || prod.image || null,
-    }));
+    // ✅ FIXED: Handle both string and object video formats
+    const vids = (variant.videos || []).map((video) => {
+      // Old format: video is a string (just the key)
+      if (typeof video === 'string') {
+        return {
+          type: "video",
+          key: video,
+          signedUrl: null, // Will need to generate signed URL separately
+          variantId: vId,
+          color,
+          poster: (variant.images && variant.images[0]) || prod.image || null,
+        };
+      }
+      // New format: video is an object with key, signedUrl, expiresAt
+      else if (video && typeof video === 'object') {
+        return {
+          type: "video",
+          key: video.key,
+          signedUrl: video.signedUrl, // Already has signed URL
+          expiresAt: video.expiresAt,
+          variantId: vId,
+          color,
+          poster: (variant.images && variant.images[0]) || prod.image || null,
+        };
+      }
+      // Fallback for any other format
+      return null;
+    }).filter(Boolean); // Remove any null entries
 
     return [...imgs, ...vids];
   });
@@ -92,10 +112,10 @@ const buildAllMedia = (prod) => {
   return media;
 };
 
-
   // load product from context
   useEffect(() => {
     const foundProduct = products.find((item) => item._id === productId);
+    console.log("PROD FOUND",foundProduct)
     if (foundProduct) {
       setProduct(foundProduct);
 
