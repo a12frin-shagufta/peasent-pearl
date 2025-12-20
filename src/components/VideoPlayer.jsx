@@ -1,5 +1,5 @@
 // src/components/VideoPlayer.jsx - SIMPLIFIED
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const VideoPlayer = ({ 
   videoKey, 
@@ -14,7 +14,7 @@ const VideoPlayer = ({
   // Extract signed URL directly
   const getVideoUrl = () => {
     if (!videoKey) return '';
-    
+
     // If it's already a URL string
     if (typeof videoKey === 'string') return videoKey;
     
@@ -26,9 +26,12 @@ const VideoPlayer = ({
     
     return '';
   };
+
   
   const videoUrl = getVideoUrl();
-  
+    useEffect(() => {
+    console.log(videoUrl)
+  }, [videoUrl])
   if (!videoUrl) {
     return (
       <div className="bg-black w-full h-full flex items-center justify-center">
