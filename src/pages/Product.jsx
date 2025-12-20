@@ -115,6 +115,7 @@ const buildAllMedia = (prod) => {
   // load product from context
   useEffect(() => {
     const foundProduct = products.find((item) => item._id === productId);
+    console.log(products)
     console.log("PROD FOUND",foundProduct)
     if (foundProduct) {
       setProduct(foundProduct);

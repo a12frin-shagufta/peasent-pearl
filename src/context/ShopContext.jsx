@@ -78,6 +78,7 @@ const ShopContextProvider = (props) => {
         ]);
 
         const productList = productRes.data.products || [];
+        console.log(productList)
         const activeOffers = offerRes.data.offers || [];
         const categoryList = categoryRes.data.categories || [];
 
