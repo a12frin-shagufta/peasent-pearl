@@ -84,7 +84,7 @@ const bannerText = maxPercent > 0
   ) : (
     <div className="text-sm text-amber-800 font-medium flex items-center">
       <span className="hidden sm:inline">Orders placed after 23 Febraury will be delivered after Eid </span>
-      <span className="sm:hidden text-center">Orders placed after 23 Febraury will be delivered after Eid </span>
+      <span className="sm:hidden text-center">Orders placed after 23 February will be delivered after Eid</span>
       {/* <span className="hidden sm:inline">Free delivery on orders above </span>
       <span className="sm:hidden">Free delivery above </span>
       <span className="font-bold ml-1">{FREE_DELIVERY_THRESHOLD} PKR</span> */}
