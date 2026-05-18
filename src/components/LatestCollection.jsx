@@ -134,7 +134,7 @@ const pickFirstVideo = (p) => {
         >
         {latestProducts.map((item, idx) => {
   const img = pickFirstImage(item);
-  console.log("Resolved image for", item.name, "=>", img, "raw:", item.image || item.images || item.variants);
+  // console.log("Resolved image for", item.name, "=>", img, "raw:", item.image || item.images || item.variants);
   return (
     <motion.div key={item._id || idx} variants={itemVariants} whileHover={{ y: -6 }}>
       <ProductItem

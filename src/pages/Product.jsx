@@ -15,6 +15,8 @@ import { FaGem, FaWeightHanging } from "react-icons/fa";
 import axios from "axios";
 import ProductItem from "../components/ProductItem";
 
+import VideoPlayer from "../components/VideoPlayer";
+
 const Product = () => {
   // --- hooks (stable order) ---
   const { productId } = useParams();
@@ -24,6 +26,8 @@ const Product = () => {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -51,9 +55,9 @@ const Product = () => {
   );
 
 
-  // Build combined media list (images + videos). We'll rebuild when product changes.
-  const buildAllMedia = (prod) => {
+const buildAllMedia = (prod) => {
   if (!prod) return [];
+  
   const media = (prod.variants || []).flatMap((variant) => {
     const vId = variant._id;
     const color = variant.color;
@@ -64,22 +68,35 @@ const Product = () => {
       variantId: vId,
       color,
     }));
-    const normalizeVideoUrl = (fileName) => {
-  if (!fileName) return null;
-  const base = import.meta.env.VITE_BACKEND_URL;
-  return `${base}/api/video/${encodeURIComponent(fileName)}`;
-};
-
-  const vids = (variant.videos || []).map((fileName) => ({
-  type: "video",
-  url: normalizeVideoUrl(fileName),    
-  variantId: vId,
-  color,
-  poster:
-    (variant.images && variant.images[0]) ||
-    prod.image ||
-    null,
-}));
+    
+    // ✅ FIXED: Handle both string and object video formats
+    const vids = (variant.videos || []).map((video) => {
+      // Old format: video is a string (just the key)
+      if (typeof video === 'string') {
+        return {
+          type: "video",
+          key: video,
+          signedUrl: null, // Will need to generate signed URL separately
+          variantId: vId,
+          color,
+          poster: (variant.images && variant.images[0]) || prod.image || null,
+        };
+      }
+      // New format: video is an object with key, signedUrl, expiresAt
+      else if (video && typeof video === 'object') {
+        return {
+          type: "video",
+          key: video.key,
+          signedUrl: video.signedUrl, // Already has signed URL
+          expiresAt: video.expiresAt,
+          variantId: vId,
+          color,
+          poster: (variant.images && variant.images[0]) || prod.image || null,
+        };
+      }
+      // Fallback for any other format
+      return null;
+    }).filter(Boolean); // Remove any null entries
 
     return [...imgs, ...vids];
   });
@@ -90,26 +107,16 @@ const Product = () => {
         { type: "image", url: prod.image, variantId: null, color: "default" },
       ];
     }
-    if (prod.videos && prod.videos.length > 0) {
-      return [
-        {
-          type: "video",
-          url: prod.videos[0],
-          variantId: null,
-          color: "default",
-          poster: prod.image || prod.videos[0] + "#t=0.5" || PLACEHOLDER_IMG,
-        },
-      ];
-    }
   }
 
   return media;
 };
 
-
   // load product from context
   useEffect(() => {
     const foundProduct = products.find((item) => item._id === productId);
+    console.log(products)
+    console.log("PROD FOUND",foundProduct)
     if (foundProduct) {
       setProduct(foundProduct);
 
@@ -137,6 +144,7 @@ const Product = () => {
       }
     }
   }, [productId, products]);
+  // Add this debug useEffect in Product.jsx
 
   // derived available for selected variant
   const selectedAvailable = selectedVariant ? variantStock(selectedVariant) : (typeof product?.stock === "number" ? product.stock : 0);
@@ -167,6 +175,23 @@ const Product = () => {
   // fallback: show newest / random
   return others.slice(0, 6);
 }, [product, products]);
+useEffect(() => {
+  if (product) {
+    console.log('📦 Product data:', product);
+    console.log('🎬 All media:', allMedia);
+    console.log('🎬 Active media:', allMedia[activeMediaIndex]);
+    
+    // Check video data specifically
+    if (allMedia[activeMediaIndex]?.type === 'video') {
+      const videoData = allMedia[activeMediaIndex];
+      console.log('🔍 Video data:', videoData);
+      console.log('🔍 Video key:', videoData.key);
+      console.log('🔍 Is object?', typeof videoData.key === 'object');
+      console.log('🔍 Object keys:', videoData.key ? Object.keys(videoData.key) : 'No key');
+    }
+  }
+}, [product, activeMediaIndex]);
+
 
   if (!product) {
     return (
@@ -236,6 +261,7 @@ const allMedia = buildAllMedia(product);
 
   setTimeout(() => setIsAddingToCart(false), 800);
 };
+
 
 
   // Handler for Buy Now — attempt to decrement stock on server (if allowed) and optimistically update UI
@@ -308,6 +334,7 @@ const normalizeImageUrl = (url) => {
  * Keep prior behavior: select a variant and set active media index to that variant's first media.
  * Use this anywhere thumbnails / variant buttons call trySelectVariant.
  */
+
 const trySelectVariant = (variant, preferredIndex = null) => {
   if (!variant) return;
   const stok = typeof variant.stock === "number"
@@ -339,22 +366,26 @@ const trySelectVariant = (variant, preferredIndex = null) => {
 // --- Render main media (image or video) ---
 // --- Render main media (image or video) ---
 // Helper to render main media (image or video)
-const renderMainMedia = (media) => {
-  if (!media || !media.url) return null;
-  const url = media.type === "video"
-  ? media.url
-  : normalizeImageUrl(media.url);
-
-  if (!url) return null;
+// Helper to render main media (either image or video)
+const renderMainMedia = () => {
+  const media = allMedia[activeMediaIndex];
+  
+  if (!media) {
+    return (
+      <div className="w-full h-96 bg-gray-100 flex items-center justify-center">
+        <div>No media available</div>
+      </div>
+    );
+  }
 
   if (media.type === "image") {
+    const url = normalizeImageUrl(media.url);
     return (
       <img
-        src={url}
+        src={url || PLACEHOLDER_IMG}
         alt={product.name}
-        className="w-full h-96 object-cover"
+        className="w-full h-96 object-cover cursor-zoom-in"
         onClick={(e) => {
-          // image click -> open zoom
           e.stopPropagation();
           setZoomActive(true);
         }}
@@ -366,53 +397,27 @@ const renderMainMedia = (media) => {
     );
   }
 
-  // video branch
-  // note: ensure video element is clickable, not covered by parent click handler
-  return (
-    <div className="w-full h-96 bg-black relative">
-      {/* optional play overlay for visual cue (not blocking) */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" className="opacity-75">
-          <path d="M5 3v18l15-9L5 3z" fill="white" />
-        </svg>
+  if (media.type === "video") {
+    return (
+      <div className="w-full h-96 bg-black relative" style={{ minHeight: '384px' }}>
+        <VideoPlayer
+ videoKey={media.signedUrl}  
+          poster={
+            normalizeImageUrl(media.poster) ||
+            normalizeImageUrl(product.image) ||
+            PLACEHOLDER_IMG
+          }
+          className="w-full h-full"
+          muted={true}
+          onPlay={() => setIsVideoPlaying(true)}
+          onPause={() => setIsVideoPlaying(false)}
+          onEnded={() => setIsVideoPlaying(false)}
+        />
       </div>
+    );
+  }
 
-      <video
-        key={url}
-        className="w-full h-full object-cover z-0"
-        playsInline
-        muted
-        loop
-        // don't autoplay if you prefer user interaction — keep muted for autoplay support
-        autoPlay
-        preload="metadata"
-        poster={normalizeImageUrl(media.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG}
-        crossOrigin="anonymous"
-        controls
-        onClick={(e) => {
-          // let user interact: stop propagation so parent zoom click doesn't get called
-          e.stopPropagation();
-        }}
-        onCanPlay={(e) => {
-          const vid = e.currentTarget;
-          // try explicit play (non-fatal)
-          vid.play?.().catch(() => {/* autoplay blocked; user must interact */});
-        }}
-        onError={(e) => {
-          console.error("Video element load error for", url, e);
-        }}
-      >
-        {/* console log the final url so you can confirm in browser console */}
-        {console.log("renderMainMedia: video source ->", url)}
-       <source src={
-  allMedia[activeMediaIndex].type === "video"
-    ? allMedia[activeMediaIndex].url
-    : normalizeImageUrl(allMedia[activeMediaIndex].url)
-} />
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  );
+  return null;
 };
 
 
@@ -501,20 +506,15 @@ const renderMainMedia = (media) => {
     }}
   />
 ) : (
-  <div className="w-full h-full relative flex items-center justify-center bg-black">
-    <video
-      className="w-full h-full object-cover"
-      src={ normalizeImageUrl(m.url) }
-      muted
-      playsInline
-      preload="metadata"
-      poster={ normalizeImageUrl(m.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG }
-      crossOrigin="anonymous"
-      onError={(e) => {
-        // if video thumb can’t load, fall back to poster placeholder
-        e.currentTarget.poster = PLACEHOLDER_IMG;
-      }}
-    />
+<div className="w-full h-full relative flex items-center justify-center bg-black">
+<VideoPlayer
+  videoKey={m.key}
+  poster={normalizeImageUrl(m.poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG}
+  className="w-full h-full object-cover"
+  muted={true}
+  controls={false}
+  autoPlay={false}
+/>
     {/* play glyph overlay */}
     <svg className="absolute w-6 h-6 opacity-90" viewBox="0 0 24 24" fill="none" aria-hidden>
       <path d="M5 3v18l15-9L5 3z" fill="white" />
@@ -552,33 +552,16 @@ const renderMainMedia = (media) => {
           }}
         />
       ) : (
-        <div className="w-full h-full rounded overflow-hidden">
-         <video
-  className="w-full h-full object-cover"
-  playsInline
-  muted
-  loop
-  autoPlay
-  preload="metadata"
-  crossOrigin="anonymous"
-  poster={ normalizeImageUrl(allMedia[activeMediaIndex].poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG }
-  onClick={(e) => e.stopPropagation()}        // <-- stop the modal container from accidentally closing/stealing clicks
-  onCanPlay={(e) => {
-    const vid = e.currentTarget;
-    if (vid.paused) {
-      vid.play().catch((err) => console.warn("Modal video play prevented:", err));
-    }
-  }}
-  onError={(e) => console.error("Modal video error:", e)}
-  controls
->
-  {normalizeImageUrl(allMedia[activeMediaIndex].url) ? (
-    <source src={ normalizeImageUrl(allMedia[activeMediaIndex].url) } type="video/mp4" />
-  ) : null}
-  Your browser does not support the video tag.
-</video>
-
-        </div>
+ <div className="w-full h-full rounded overflow-hidden">
+<VideoPlayer
+  videoKey={allMedia[activeMediaIndex].key}
+  poster={normalizeImageUrl(allMedia[activeMediaIndex].poster) || normalizeImageUrl(product.image) || PLACEHOLDER_IMG}
+  className="w-full h-full"
+  muted={true}
+  autoPlay={true}
+  controls={true}
+/>
+  </div>
       )}
     </div>
   </div>
