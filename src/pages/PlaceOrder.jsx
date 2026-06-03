@@ -134,8 +134,8 @@ const PlaceOrder = () => {
     iban: "PK26UNIL0109000320334964",
     jazzName: "Rimshah",
     jazzNumber: "03082650680",
-    easypaisaName: "Mehak Mushtaq",
-    easypaisaNumber: "03082650680",
+    easypaisaName: "Rimsha",
+    easypaisaNumber: "03171731789",
   };
 
   // Map cart items to cart data

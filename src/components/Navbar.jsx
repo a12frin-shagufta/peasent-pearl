@@ -75,7 +75,7 @@ const bannerText = maxPercent > 0
       {/* Delivery threshold indicator */}
       <div className="hidden md:flex items-center ml-4 pl-4 border-l border-amber-200">
         <span className="text-xs text-amber-700">
-          Orders placed after 8 may will be delivered after eid
+          Our delivery time is 13-16 working days
           {/* Free delivery on orders above{" "} */}
           {/* <span className="font-semibold">{FREE_DELIVERY_THRESHOLD} PKR</span> */}
         </span>
@@ -84,10 +84,10 @@ const bannerText = maxPercent > 0
   ) : (
     <div className="text-sm text-amber-800 font-medium flex items-center">
       <span className="hidden sm:inline text-center">
-        Orders placed after 8 may will be delivered after eid
+        Our delivery time is 13-16 working days
       </span>
       <span className="sm:hidden text-center">
-        Orders placed after 8 may will be delivered after eid 
+        Our delivery time is 13-16 working days 
       </span>
       {/* <span className="font-bold ml-1">{FREE_DELIVERY_THRESHOLD} PKR</span> */}
     </div>
