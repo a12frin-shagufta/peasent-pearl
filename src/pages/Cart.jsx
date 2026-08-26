@@ -151,7 +151,7 @@ const Cart = () => {
 
   const subtotal = cartData.reduce((sum, item) => sum + Number(item.total || 0), 0);
 
-  const shipping = subtotal > 3000 ? 0 : Number(delivery_fee || 0);
+  const shipping = Number(delivery_fee || 0);
   const grandTotal = subtotal + shipping;
 
   if (cartData.length === 0) {
