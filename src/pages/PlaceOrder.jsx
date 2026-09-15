@@ -196,7 +196,7 @@ useEffect(() => {
 }, [cartItems, products]);
 
   const subtotal = cartData.reduce((s, it) => s + (Number(it.total) || 0), 0);
-  const shipping = subtotal >= 3000 ? 0 : Number(delivery_fee || 0);
+  const shipping = Number(delivery_fee || 0);
   const total = subtotal + shipping;
 
   // Advance: if COD -> half, else full
